@@ -1,9 +1,14 @@
 import pygame
 
-from oneleve import oneLevel
-from twoLevel import twoLevel
+from .oneLevel import oneLevel
+from .twoLevel import twoLevel
+from .ranking import rankingScreen
+
+from root import MAIN_DIR
+
 
 def chooseMode(screen):
+    rankingScreen(screen)
 
     class GameOptions:
         def __init__(self):
@@ -12,7 +17,7 @@ def chooseMode(screen):
             self.masks = []
 
             for i in range(3):
-                self.images.append(pygame.image.load('./images/chooseGame/option'+str(i)+'.png'))
+                self.images.append(pygame.image.load(MAIN_DIR + '/images/chooseGame/option'+str(i)+'.png'))
                 self.masks.append(pygame.mask.from_surface(self.images[0]))
             
             for r in range(3):
@@ -27,20 +32,15 @@ def chooseMode(screen):
                     print('Erro interno na linha 25')
 
                 self.rects.append(self.images[r].get_rect(center=positionRect))
-    
-    #title = pygame.image.load('./images/chooseGame/title.png')
 
-    font = pygame.font.Font('./Peace Sans.otf', 30)
+
+    # ======| Variables |====== #
+    font = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 30)
     title = font.render("Escolha um modo de Jogo!", True, (255, 255, 255))
-
-    ranking = pygame.image.load('./images/chooseGame/ranking.png')
+    ranking = pygame.image.load(MAIN_DIR + '/images/chooseGame/ranking.png')
     ranking_rect = ranking.get_rect(center=(300, 530))
-
-
     gameOptions = GameOptions()
-    
-    background = pygame.image.load('./images/chooseGame/background.png')
-
+    background = pygame.image.load(MAIN_DIR + '/images/chooseGame/background.png')
     clock = pygame.time.Clock()
 
     choosing = True
@@ -60,11 +60,11 @@ def chooseMode(screen):
             clickPosition = pos[0] - gameOptions.rects[c].x, pos[1] - gameOptions.rects[c].y
 
             if gameOptions.rects[c].collidepoint(pos) and gameOptions.masks[c].get_at(clickPosition):
-                gameOptions.images[c] = pygame.transform.scale(pygame.image.load('./images/chooseGame/option'+str(c)+'.png'), (int(309*1.08), int(227*1.08)))
+                gameOptions.images[c] = pygame.transform.scale(pygame.image.load(MAIN_DIR + '/images/chooseGame/option'+str(c)+'.png'), (int(309*1.08), int(227*1.08)))
                 mouseEnter = True
                 
             else:
-                gameOptions.images[c] = pygame.image.load('./images/chooseGame/option'+str(c)+'.png').convert_alpha()
+                gameOptions.images[c] = pygame.image.load(MAIN_DIR + '/images/chooseGame/option'+str(c)+'.png').convert_alpha()
 
         if mouseEnter:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
@@ -79,18 +79,18 @@ def chooseMode(screen):
 
                 if gameOptions.rects[e].collidepoint(pos) and gameOptions.masks[e].get_at(clickPosition):
                     choosing = False
-                    if e == 0:
+                    if e == 1:
                         oneLevel(screen)
-                    elif e == 1:
+                    elif e == 0:
                         twoLevel(screen)
 
-        print('Ainda estou no loop principal')
+
         for c in range(3):
             screen.blit(gameOptions.images[c], gameOptions.rects[c])
         
+        
         screen.blit(title, (20, 40))
         screen.blit(ranking, ranking_rect)
-
         pygame.display.flip()
 
     return

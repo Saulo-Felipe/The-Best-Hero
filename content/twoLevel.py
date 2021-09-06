@@ -2,8 +2,6 @@ import pygame
 
 
 def twoLevel(screen):
-
-
     clock = pygame.time.Clock()
     while True:
         clock.tick(120)
