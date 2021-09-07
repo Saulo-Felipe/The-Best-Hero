@@ -1,16 +1,11 @@
 import psycopg2
 
 conn = psycopg2.connect(
-    host="batyr.db.elephantsql.com",
-    database="niiaxvpj",
-    user="niiaxvpj",
-    password="CSdaMAAEhIWN_VYLHoeeGyiIDo_6x-R2")
+    host="chunee.db.elephantsql.com",
+    database="rlajypdt",
+    user="rlajypdt",
+    password="0XXi13pbmWolYn47_U6WBiqumBL9ZbIe")
+
+conn.set_session(autocommit=True)
 
 connection = conn.cursor()
-
-'''
-connection.execute("SELECT * FROM clients")
-
-records = connection.fetchall()
-
-'''

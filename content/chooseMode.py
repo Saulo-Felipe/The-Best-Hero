@@ -8,7 +8,6 @@ from root import MAIN_DIR
 
 
 def chooseMode(screen):
-    rankingScreen(screen)
 
     class GameOptions:
         def __init__(self):
