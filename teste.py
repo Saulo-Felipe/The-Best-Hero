@@ -1,126 +1,178 @@
 import pygame
-from pygame.locals import *
-import sys
-from root import MAIN_DIR
 
-pygame.init()
+WHITE = (255,255,255)
+BLACK = (0  ,0  ,0  )
+RED   = (255,0  ,0  )
+GREEN = (0  ,255,0  )
+BLUE  = (0  ,0  ,255)
 
-# Classes
-class Screen:
-    screenWidth = int(1140 - 1140 / 5) 
-    screenHeight = int(724 - 724 / 5)
-    screen = pygame.display.set_mode((screenWidth, screenHeight))
+class Player():
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, playerX, playerY):
-        print('inciciou')
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, x=0, y=0, width=150, height=150):
 
-        self.sprites = []
-        for c in range(5):
-            imageLocal =  f'{MAIN_DIR}/images/heroi/character{c}.png'
-            self.sprites.append(pygame.image.load(imageLocal))
+        self.rect = pygame.Rect(x, y, width, height)
 
-        self.defaultMove = 'left'
+        self.speed_x = 5
+        self.speed_y = 5
 
-        self.currentSprite = 0
-        self.image = self.sprites[self.currentSprite]
+        self.move_x = 0
+        self.move_y = 0
 
-        self.playerX = playerX
-        self.playerY = playerY
+        self.collision = [False] * 9
 
-        self.rect = self.image.get_rect()
-        self.rect.topleft = self.playerX, self.playerY #100, 456
+        self.font = pygame.font.SysFont("", 32)
+        self.text = "";
 
-    def changeSide(self, side):
-        if side == 'left':
-            self.defaultMove = side
-            self.sprites = []
-            for c in range(5):
-                imageLocal = pygame.image.load(imagesFolder + '/heroi/character'+ str(c) +'.png')
+    def set_center(self, screen):
+        self.rect.center = screen.get_rect().center
 
-                self.sprites.append(pygame.transform.flip(imageLocal, True, False))
+    def event_handler(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                self.move_x -= self.speed_x
+            elif event.key == pygame.K_RIGHT:
+                self.move_x += self.speed_x
+            elif event.key == pygame.K_UP:
+                self.move_y -= self.speed_y
+            elif event.key == pygame.K_DOWN:
+                self.move_y += self.speed_y
 
-        if side == 'right':
-            self.defaultMove = side
-            self.sprites = []
-            for c in range(5):
-                imageLocal = pygame.image.load('./images/heroi/character'+ str(c) +'.png')
-                self.sprites.append(imageLocal)
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                self.move_x += self.speed_x
+            elif event.key == pygame.K_RIGHT:
+                self.move_x -= self.speed_x
+            elif event.key == pygame.K_UP:
+                self.move_y += self.speed_y
+            elif event.key == pygame.K_DOWN:
+                self.move_y -= self.speed_y
 
+    def update(self):
+        self.rect.x += self.move_x
+        self.rect.y += self.move_y
 
+    def draw(self, screen):
 
-    def stopped(self):
-        if self.playerY < 456:
-            self.playerY += 10
-            if self.currentSprite != 8:
-                self.currentSprite = 8
+        pygame.draw.rect(screen, WHITE, self.rect, 2)
+        self.draw_point(screen, self.rect.topleft, self.collision[0])
+        self.draw_point(screen, self.rect.topright, self.collision[1])
+        self.draw_point(screen, self.rect.bottomleft, self.collision[2])
+        self.draw_point(screen, self.rect.bottomright, self.collision[3])
+
+        self.draw_point(screen, self.rect.midleft, self.collision[4])
+        self.draw_point(screen, self.rect.midright, self.collision[5])
+        self.draw_point(screen, self.rect.midtop, self.collision[6])
+        self.draw_point(screen, self.rect.midbottom, self.collision[7])
+
+        self.draw_point(screen, self.rect.center, self.collision[8])
+
+    def draw_point(self, screen, pos, collision):
+        if not collision:
+            pygame.draw.circle(screen, GREEN, pos, 5)
         else:
-            if self.currentSprite > 0:
-                self.currentSprite = 0
+            pygame.draw.circle(screen, RED, pos, 5)
 
-        self.image = self.sprites[int(self.currentSprite)]
-        self.rect.topleft = self.playerX, self.playerY #100, 456
-        self.currentSprite += 0.2
+    def check_collision(self, rect):
+        self.collision[0] = rect.collidepoint(self.rect.topleft)
+        self.collision[1] = rect.collidepoint(self.rect.topright)
+        self.collision[2] = rect.collidepoint(self.rect.bottomleft)
+        self.collision[3] = rect.collidepoint(self.rect.bottomright)
+
+        self.collision[4] = rect.collidepoint(self.rect.midleft)
+        self.collision[5] = rect.collidepoint(self.rect.midright)
+        self.collision[6] = rect.collidepoint(self.rect.midtop)
+        self.collision[7] = rect.collidepoint(self.rect.midbottom)
+
+        self.collision[8] = rect.collidepoint(self.rect.center)
+
+    def render_collision_info(self):
+
+        text = "collision: "
+
+        if self.collision[0] or self.collision[2] or self.collision[4]:
+            text += "left "
+
+        elif self.collision[1] or self.collision[3] or self.collision[5]:
+            text += "right "
+
+        if self.collision[0] or self.collision[1] or self.collision[6]:
+            text += "top "
+
+        elif self.collision[2] or self.collision[3] or self.collision[7]:
+            text += "bottom "
+
+        elif self.collision[8]:
+            text += "center "
 
 
-    def walk(self, type):
-        self.changeSide(type)
-        if type == 'right':
-            self.playerX += 10
-        if type == 'left':
-            self.playerX -= 10
+        self.text = self.font.render(text, 1, WHITE)
 
-        if self.currentSprite > 4 or self.currentSprite < 1:
-            self.currentSprite = 1
+    def draw_collision_info(self, screen, pos):
+        screen.blit(self.text, pos)
 
-        self.image = self.sprites[int(self.currentSprite)]
-        self.rect.topleft = self.playerX, self.playerY #100, 456
-        self.currentSprite += 0.5
-    
-    def climb(self):
-        if self.playerX > 100:
-            self.playerY -= 10
-            if self.currentSprite < 6 or self.currentSprite > 7:
-                self.currentSprite = 6
-            
-            self.image = self.sprites[int(self.currentSprite)]
-            self.rect.topleft = self.playerX, self.playerY
-            self.currentSprite += 0.3
+#----------------------------------------------------------------------
+
+class Game():
+
+    def __init__(self):
+
+        pygame.init()
+
+        self.screen = pygame.display.set_mode( (800,600) )
+        pygame.display.set_caption("Side Collision")
+
+        self.player = Player()
+        self.enemy  = Player()
+        self.enemy.set_center(self.screen)
 
 
+    def run(self):
+        clock = pygame.time.Clock()
 
-# ======| Variables |====== #
-bg = pygame.image.load('./images/cenario02.png')
-backgroundImage = pygame.transform.smoothscale(bg, (Screen.screenWidth, Screen.screenHeight))
+        RUNNING = True
 
-playerSprites = pygame.sprite.Group()
-player = Player(100, 456)
-playerSprites.add(player)
+        while RUNNING:
 
-# Functions
+            # --- events ----
 
-def movePlayer():
-    if pygame.key.get_pressed()[pygame.K_RIGHT]:
-        player.walk('right')
-    elif pygame.key.get_pressed()[pygame.K_LEFT]:
-        player.walk('left')
-    elif pygame.key.get_pressed()[pygame.K_UP]:
-        player.climb()
-    else:
-        player.stopped()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    RUNNING = False
 
-while True:
-    Screen.screen.blit(backgroundImage, (0, 0))
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        RUNNING = False
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            sys.exit()
+                self.player.event_handler(event)
 
-    playerSprites.draw(Screen.screen)
+            # --- updates ---
 
-    movePlayer()
+            self.player.update()
+            self.enemy.update()
 
-    pygame.display.flip()
+            self.player.check_collision(self.enemy.rect)
+            self.enemy.check_collision(self.player.rect)
+            self.player.render_collision_info()
+            self.enemy.render_collision_info()
 
-pygame.quit()
+            # --- draws ----
+
+            self.screen.fill(BLACK)
+
+            self.player.draw(self.screen)
+            self.enemy.draw(self.screen)
+
+            self.player.draw_collision_info(self.screen, (0,0))
+            self.enemy.draw_collision_info(self.screen, (0,32))
+
+            pygame.display.update()
+
+            # --- FPS ---
+
+            clock.tick(30)
+
+        pygame.quit()
+
+#----------------------------------------------------------------------
+
+Game().run()

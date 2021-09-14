@@ -3,14 +3,21 @@ import json
 from root import MAIN_DIR
 from root import connection
 from . import loginScreen
+from . import registerScreen
+from ..chooseMode import chooseMode
 
 
+clock = pygame.time.Clock()
 
 def mainScreen(screen):
+    clock.tick(60)
     class IsAuthenticated:
-        Afile = open(MAIN_DIR + "/localStorage.json")
-        UserState = json.load(Afile)
-        Afile.close()
+        def verify():
+            Afile = open(MAIN_DIR + "/localStorage.json", "r")
+            UserState = json.load(Afile)
+            Afile.close()
+            
+            return UserState
 
     # ================================================= #
 
@@ -20,36 +27,47 @@ def mainScreen(screen):
         enter = pygame.image.load(MAIN_DIR + "/images/mainScreen/enter.png")
         logout = pygame.image.load(MAIN_DIR + "/images/mainScreen/exit.png")
 
+        play = pygame.image.load(MAIN_DIR + "/images/mainScreen/play.png")
+
     class Rects:
         enter = Images.enter.get_rect(topleft=(1140-Images.enter.get_width()-50, 724-Images.enter.get_height()-50))
         logout = Images.logout.get_rect(topleft=(1140-Images.enter.get_width()-50, 724-Images.enter.get_height()-50))
 
+        play = Images.play.get_rect(topleft=(440, 419))
+
     class inputValues:
         state = False
-        emailContent = "Teste de texto aqui"
-        passwordContent = "Teste de texto aqui"
 
         selectedSubScreen = False
 
-    def Clicks():
-        if event.type == pygame.MOUSEBUTTONUP:
-            userStatus = IsAuthenticated.UserState["isAuthenticated"]
+    # def Clicks(events):
+    #     if events.type == pygame.MOUSEBUTTONUP:
+    #         userStatus = IsAuthenticated.verify()["isAuthenticated"]
 
-            if userStatus == False and Rects.enter.collidepoint(event.pos):
-                print('Detectei colisão')
-                inputValues.selectedSubScreen = "login"
+    #         if userStatus == False and Rects.enter.collidepoint(events.pos):
+    #             inputValues.selectedSubScreen = "login"
 
-            elif userStatus == True and Rects.logout.collidepoint(event.pos):
-                inputValues.selectedSubScreen = "register"
+    #         elif userStatus == True and Rects.logout.collidepoint(events.pos):
+    #             Afile = open(MAIN_DIR + "/localStorage.json", "w")
+    #             jsonUpdate = { "isAuthenticated": False }
+    #             json.dump(jsonUpdate, Afile)
+    #             Afile.close()
+            
+    #         if Rects.play.collidepoint(events.pos) and inputValues.selectedSubScreen == False:
+    #             if userStatus == True:
+    #                 return True
+    #             else:
+    #                 inputValues.selectedSubScreen = "login"
+    #                 return False
 
 
     def BlitAll():
         screen.blit(Images.background, (-1293, -3))
-
+        screen.blit(Images.play, Rects.play)
 
         # Apenas elementos autenticados
         def isAuthenticated():
-            if IsAuthenticated.UserState["isAuthenticated"] == True:
+            if IsAuthenticated.verify()["isAuthenticated"] == True:
                 screen.blit(Images.logout, Rects.logout)
             else:
                 screen.blit(Images.enter, Rects.enter)
@@ -68,7 +86,8 @@ def mainScreen(screen):
     while True:
 
         BlitAll()
-
+        nextScreen = False #Clicks(event)
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
@@ -81,19 +100,43 @@ def mainScreen(screen):
                         if event.unicode == aceptedLetters[letter]:
                             inputValues.state = aceptedLetters[letter]
                             break
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                userStatus = IsAuthenticated.verify()["isAuthenticated"]
+
+                if userStatus == False and Rects.enter.collidepoint(event.pos):
+                    inputValues.selectedSubScreen = "login"
+
+                elif userStatus == True and Rects.logout.collidepoint(event.pos):
+                    Afile = open(MAIN_DIR + "/localStorage.json", "w")
+                    jsonUpdate = { "isAuthenticated": False }
+                    json.dump(jsonUpdate, Afile)
+                    Afile.close()
+                
+                if Rects.play.collidepoint(event.pos) and inputValues.selectedSubScreen == False:
+                    if userStatus == True:
+                        nextScreen = True
+                    else:
+                        inputValues.selectedSubScreen = "login"
+                        nextScreen = False
+            
 
 
         if inputValues.selectedSubScreen == "login":
             inputValues.selectedSubScreen = loginScreen.drawLogin(screen, event, inputValues.state)
         elif inputValues.selectedSubScreen == "register":
-            print('Esta na tela de registro')
+            inputValues.selectedSubScreen = registerScreen.drawRegister(screen, event, inputValues.state)
+        
         
         inputValues.state = False
 
-        Clicks()
+
+        if nextScreen == True:
+            print("Saindo da tela")
+            break
 
 
         pygame.display.flip()
 
 
-    return
+    return chooseMode(screen)
