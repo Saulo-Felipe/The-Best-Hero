@@ -4,7 +4,10 @@ from root import connection
 from root import MAIN_DIR
 from content import chooseMode
 
+
 def rankingScreen(screen):
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
     connection.execute('SELECT * FROM player')
 
     records = connection.fetchall()
@@ -25,7 +28,6 @@ def rankingScreen(screen):
         goldMedal = pygame.image.load(MAIN_DIR + "/images/ranking/gold-medal.png")
         silverMedal = pygame.image.load(MAIN_DIR + "/images/ranking/silver-medal.png")
         bronzeMedal = pygame.image.load(MAIN_DIR + "/images/ranking/bronze-medal.png")
-
 
 
     fontTitle = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 35)
@@ -49,7 +51,7 @@ def rankingScreen(screen):
 
         # Imagem do usuário
         screen.blit(Images.user, ((1140 - 900)/2+75, positions.rectsPositions+5))
-        
+
         # Nome do usuário
         playerName = fontConfig.render(username, True, (0, 0, 0))
         screen.blit(playerName, ((1140 - 900)/2+Images.user.get_width()+85, positions.rectsPositions+20))
@@ -69,8 +71,6 @@ def rankingScreen(screen):
             screen.blit(Images.silverMedal, ((1140 - 900)/2-30,  positions.rectsPositions-20, 65, 65))
         elif count == 3:
             screen.blit(Images.bronzeMedal, ((1140 - 900)/2-30,  positions.rectsPositions-20, 65, 65))
-            
-
 
 
     while True:
@@ -84,14 +84,12 @@ def rankingScreen(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-            
+
             if event.type == pygame.MOUSEBUTTONUP:
                 if backScreen.collidepoint(event.pos):
                     return chooseMode.chooseMode(screen)
                     break
                     
-                
-
 
         positions.rectsPositions = 100
         count = 1

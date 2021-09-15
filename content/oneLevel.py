@@ -8,6 +8,8 @@ def oneLevel(screen):
     class Images:
         background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background.png")
         playerSprite = pygame.image.load(MAIN_DIR + "/images/heroi/allpersons.png")
+        pauseImg = pygame.image.load(MAIN_DIR + "/images/levels/pause.png")
+        pause = pauseImg.get_rect(topleft=(screen.get_width()-pauseImg.get_width()-20, 20))
 
     class Moviments:
         backgroundX = 0
@@ -16,6 +18,7 @@ def oneLevel(screen):
         playerX = 100
         playerY = 552
         floor = 552
+        isUp = False
 
         Type = "stopped"
         Side = "right"
@@ -61,7 +64,6 @@ def oneLevel(screen):
                 self.image = self.spriteFrames[int(self.frameIndex)]
                 Moviments.Type = "stopped"
 
-
             elif Moviments.Type == "jump" and Moviments.Side == "left":
                 self.image = pygame.transform.flip(self.spriteFrames[int(self.frameIndex) + 5], True, False)
             elif Moviments.Type == "jump" and Moviments.Side == "right":
@@ -84,9 +86,14 @@ def oneLevel(screen):
         ]
 
         allHolders = [
-            {"start": 1258, "end": 1542, "down": 415, "up": 362, "floor": 266},
-            {"start": 2487, "end": 2771, "down": 411, "up": 358, "floor": 259},
+            {"start": 1244, "end": 1528, "down": 495, "up": 443, "floor": 348},
+            {"start": 2485, "end": 2770, "down": 501, "up": 448, "floor": 353},
+            {"start": 3639, "end": 3923, "down": 498, "up": 445, "floor": 350},
+            {"start": 4760, "end": 5044, "down": 502, "up": 449, "floor": 354},
+            {"start": 5563, "end": 5847, "down": 386, "up": 333, "floor": 238},
+
         ]
+
 
     def collision():
         floor = (Moviments.backgroundX - 570)*(-1)
@@ -99,27 +106,24 @@ def oneLevel(screen):
             Y = Moviments.playerY
             X = (Moviments.backgroundX * -1) + 552 + 52
 
-            # head collision
-            if (holder["up"] < Y < holder["down"]) and (holder["start"] < X < holder["end"]):
+            if Y < holder["down"] and Y > holder["up"] and holder["start"] < X < holder["end"]:
                 Moviments.Type = "fall"
-                print("Bateu cabeça")
-
-            # Jump collision
-            if (Moviments.Type == "fall") and (Y < holder["floor"]) and (holder["start"] < X < holder["end"]) :
+            
+            if Y <= holder["up"] and holder["start"] < X < holder["end"] and Moviments.Type == "fall":
                 Moviments.floor = holder["floor"]
-
-            #fall collision
-            if holder["start"] > X > holder["end"]: # or (X > holder["end"])) and (Moviments.playerY <= holder["floor"]):
-                print("ENtrei")
+            
+            if (X < holder["start"] or X > holder["end"]) and Moviments.floor == holder["floor"]:
+                # Reserva: and (Y >= Moviments.floor)
+                print("Saiu")
                 Moviments.floor = 552
                 Moviments.Type = "fall"
-
-
             
 
+
     def moviments():
+
         if Moviments.Type == "jump":
-            if Moviments.playerY > Moviments.floor -299:
+            if Moviments.playerY > Moviments.floor -220:
                 Moviments.playerY -= 8
             else:
                 Moviments.Type = "fall"
@@ -141,8 +145,6 @@ def oneLevel(screen):
                 Moviments.playerX -= 5
             elif Moviments.backgroundX != 0:
                 Moviments.backgroundX += 5
-        
-
 
 
     playerGroup = pygame.sprite.Group()
@@ -151,55 +153,65 @@ def oneLevel(screen):
 
     def blitAll():
         screen.blit(Images.background, (Moviments.backgroundX, 0))
+        screen.blit(Images.pauseImg, Images.pause)
+
+    class pause:
+        Pause = False
+
+        def drawPause():
+            pygame.draw.rect(screen, "white", (300, 200, 200, 400))
 
 
     clock = pygame.time.Clock()
     while True:
-        clock.tick(60)
-        screen.fill("black")
+        if pause.Pause == False:
+            clock.tick(60)
+            screen.fill("black")
 
-        for event in pygame.event.get():
-            if event == pygame.QUIT:
-                exit()
+            for event in pygame.event.get():
+                if event == pygame.QUIT:
+                    exit()
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if Images.pause.collidepoint(event.pos):
+                        pause.Pause = True
             
-        
-        if pygame.key.get_pressed()[pygame.K_RIGHT]:
-            Moviments.Side = "right"
-            Moviments.diagonally = True
-            if Moviments.Type != "jump" and Moviments.Type != "fall":
-                Moviments.Type = "walk"
+            if pygame.key.get_pressed()[pygame.K_RIGHT]:
+                Moviments.Side = "right"
+                Moviments.diagonally = True
+                if Moviments.Type != "jump" and Moviments.Type != "fall":
+                    Moviments.Type = "walk"
 
-        if pygame.key.get_pressed()[pygame.K_LEFT]:
-            Moviments.Side = "left"
-            Moviments.diagonally = True
-            if Moviments.Type != "jump" and Moviments.Type != "fall":
-                Moviments.Type = "walk"            
+            if pygame.key.get_pressed()[pygame.K_LEFT]:
+                Moviments.Side = "left"
+                Moviments.diagonally = True
+                if Moviments.Type != "jump" and Moviments.Type != "fall":
+                    Moviments.Type = "walk"            
 
-        if pygame.key.get_pressed()[pygame.K_UP]:
-            if "fall" != Moviments.Type != "jump":
-                Moviments.Type = "jump"
+            if pygame.key.get_pressed()[pygame.K_UP]:
+                if "fall" != Moviments.Type != "jump":
+                    Moviments.Type = "jump"
 
-        if pygame.key.get_pressed()[pygame.K_DOWN]:
-            if Moviments.Type == "jump":
-                Moviments.Type = "fall"
-
+            if pygame.key.get_pressed()[pygame.K_DOWN]:
+                if Moviments.Type == "jump":
+                    Moviments.Type = "fall"
 
 
-        blitAll()
 
-        pygame.draw.rect(screen, "red", (400, 266, 284, 10))
+            blitAll()
 
 
-        playerGroup.draw(screen)
+            playerGroup.draw(screen)
 
-        moviments()
+            moviments()
+
+            Moviments.diagonally = False
+
+            collision()
+        else:
+
+            pause.drawPause()
 
         playerGroup.update()
-        Moviments.diagonally = False
-
-        collision()
         
         pygame.display.flip()
-
-    
-    return

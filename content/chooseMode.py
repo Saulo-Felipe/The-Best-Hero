@@ -40,9 +40,6 @@ def chooseMode(screen):
     # ======| Variables |====== #
     font = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 30)
     title = font.render("Escolha um modo de Jogo", True, (255, 255, 255))
-    
-    # ranking = pygame.image.load(MAIN_DIR + '/images/chooseGame/ranking.png')
-    # rankingRect = ranking.get_rect(center=(300, 530))
 
     backScreenImg = pygame.image.load(MAIN_DIR + '/images/backScreen.png')
     backScreen = backScreenImg.get_rect(topleft=(screen.get_width()-backScreenImg.get_width()-20, 20))
@@ -66,9 +63,10 @@ def chooseMode(screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for e in range(4):
                     pos = pygame.mouse.get_pos()
-                    clickPosition = pos[0] - gameOptions.rects[e].x, pos[1] - gameOptions.rects[c].y
+                    clickPosition = pos[0] - gameOptions.rects[e].x, pos[1] - gameOptions.rects[e].y
 
                     if gameOptions.rects[e].collidepoint(pos) and gameOptions.masks[e].get_at(clickPosition):
+                        
                         choosing = False
                         if e == 1:
                             return oneLevel(screen)
