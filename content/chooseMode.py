@@ -53,7 +53,6 @@ def chooseMode(screen):
     while choosing:
         clock.tick(120)
 
-        screen.fill((0, 0, 0))
         screen.blit(background, (0, 0))
 
         for event in pygame.event.get():
@@ -69,7 +68,7 @@ def chooseMode(screen):
                         
                         choosing = False
                         if e == 1:
-                            return oneLevel(screen)
+                            return oneLevel.oneLevel(screen)
                         elif e == 0:
                             return twoLevel(screen)
                         elif e == 3:

@@ -1,7 +1,10 @@
 import pygame
 from root import MAIN_DIR
 
+
 def configGame(screen):
+    
+    backgroundBlack = pygame.image.load(MAIN_DIR + "/images/mainScreen/backgroundBlack.png")
 
     class configsImages:
         listBtn = pygame.image.load(MAIN_DIR + "/images/levels/list.png")
@@ -9,36 +12,51 @@ def configGame(screen):
         configBtn = pygame.image.load(MAIN_DIR + "/images/levels/config.png")
         backToGame = pygame.image.load(MAIN_DIR + "/images/levels/backToGame.png")
 
-    
+
     class rects:
         backToGameRect = configsImages.backToGame.get_rect(topleft=((screen.get_width()-configsImages.backToGame.get_width())/2, screen.get_height()/2+20))
-        restartGameRect = configsImages.restartBtn.get_rect(topleft=((screen.get_width()-60)/2, (screen.get_height()-200)/2+15))
+        restartGameRect = configsImages.restartBtn.get_rect(topleft=((screen.get_width()-60)/2, (screen.get_height()-200)/2))
+        listGameRect = configsImages.listBtn.get_rect(topleft=((screen.get_width()-350)/2, (screen.get_height()-200)/2))
+        configGameRect = configsImages.configBtn.get_rect(topleft=(((screen.get_width()+220)/2, (screen.get_height()-200)/2)))
 
-        
     class pause:
         Pause = False
+        gameOver = False
         fontPause = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 35)
-        pauseRender = fontPause.render("PAUSADO", True, (0, 0, 0))
 
-        def drawPause(event):
-            pygame.draw.rect(screen, "white", ((screen.get_width()-400)/2, (screen.get_height()-400)/2, 400, 350))
-            screen.blit(pause.pauseRender, ((screen.get_width()-pause.pauseRender.get_width())/2, (screen.get_height()-400)/2+20))
+        def drawPause():
+            if pause.Pause == True:
+                screen.blit(backgroundBlack, (0, 0))
+
+                TxtPaused = pause.fontPause.render("PAUSADO", True, (0, 0, 0))
+                pygame.draw.rect(screen, "white", ((screen.get_width()-400)/2, (screen.get_height()-400)/2, 400, 350))
+                screen.blit(TxtPaused, ((screen.get_width()-TxtPaused.get_width())/2, (screen.get_height()-400)/2+20))
+                screen.blit(configsImages.backToGame, rects.backToGameRect)
+
+            elif pause.gameOver == True:
+                screen.blit(backgroundBlack, (0, 0))
+
+                TxtPaused = pause.fontPause.render("GAME OVER", True, (0, 0, 0))
+                pygame.draw.rect(screen, "white", ((screen.get_width()-400)/2, (screen.get_height()-400)/2, 400, 300))
+                screen.blit(TxtPaused, ((screen.get_width()-TxtPaused.get_width())/2, (screen.get_height()-400)/2+20))
+
+            if pause.gameOver == True or pause.Pause == True:
+                screen.blit(configsImages.listBtn, rects.listGameRect)
+                screen.blit(configsImages.restartBtn, rects.restartGameRect)
+                screen.blit(configsImages.configBtn, rects.configGameRect)
             
-            screen.blit(configsImages.listBtn, ((screen.get_width()-350)/2, (screen.get_height()-200)/2+15))
-            screen.blit(configsImages.restartBtn, rects.restartGameRect)
-            screen.blit(configsImages.configBtn, ((screen.get_width()+220)/2, (screen.get_height()-200)/2+15))
 
-            screen.blit(configsImages.backToGame, rects.backToGameRect)
+        def verifyScreen(event):
+            if event.type == pygame.MOUSEBUTTONUP:
+                if rects.backToGameRect.collidepoint(event.pos):
+                    return "backToGame"
+                
+                if rects.restartGameRect.collidepoint(event.pos):
+                    return "restartGame"
 
-            return verifyScreen(event)
+                if rects.listGameRect.collidepoint(event.pos):
+                    return "leaveGame"
 
-    def verifyScreen(event):
-        if event.type == pygame.MOUSEBUTTONUP:
-            if rects.backToGameRect.collidepoint(event.pos):
-                return "backToGame"
-            
-            if rects.restartGameRect.collidepoint(event.pos):
-                return "restartGame"
 
 
 

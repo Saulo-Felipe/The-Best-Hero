@@ -74,8 +74,6 @@ def rankingScreen(screen):
 
 
     while True:
-        screen.fill((0, 0, 0))
-
         screen.blit(Images.background, (0, 0))
         screen.blit(title, ((screen.get_width()-title.get_width())/2, 50))
         screen.blit(Images.crown, ((screen.get_width()+title.get_width())/2+20, 40))

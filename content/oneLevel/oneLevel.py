@@ -2,16 +2,30 @@ import pygame
 import os
 from root import MAIN_DIR
 from time import sleep
-from .monsters import monsters
+from .monsters import Monster
 from .restart_pause import configGame
+from .coins import Coins
+import content.chooseMode as chooseMode
+import json
+from root import connection
+
 
 def oneLevel(screen):
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+    class configDead:
+        pause = configGame(screen)
+        isPaused = False
+        isGameOver = False
+        actionClickPause = False
+        isDead = 0
 
     class Images:
         background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background.png")
         playerSprite = pygame.image.load(MAIN_DIR + "/images/heroi/allpersons.png")
         pauseImg = pygame.image.load(MAIN_DIR + "/images/levels/pause.png")
         pause = pauseImg.get_rect(topleft=(screen.get_width()-pauseImg.get_width()-20, 20))
+        coin = pygame.image.load(MAIN_DIR + "/images/levels/coin.png")
 
     class Moviments:
         backgroundX = 0
@@ -27,7 +41,6 @@ def oneLevel(screen):
         diagonally = False
 
         isMoving = False
-
 
     class Player(pygame.sprite.Sprite):
         def __init__(self):
@@ -49,6 +62,7 @@ def oneLevel(screen):
             self.rect.topleft = (Moviments.playerX, Moviments.playerY)
 
         def update(self, backgroundX):
+            self.mask = pygame.mask.from_surface(self.image)
             if Moviments.Type == "jump":
                 self.frameIndex += 0.05
             else:
@@ -83,7 +97,6 @@ def oneLevel(screen):
             else:
                 self.image = self.spriteFrames[0] if Moviments.Side == "right" else pygame.transform.flip(self.spriteFrames[0], True, False)
 
-
     class Obstacles():
         allHoles = [
             {"start": 1885-15, "end": 2104-15},
@@ -103,7 +116,9 @@ def oneLevel(screen):
         ]
 
         allBoxes = [
-            {"start": 3061, "end": 3218, "up": 533, "floor": 450}
+            {"start": 3061, "end": 3218, "up": 533, "floor": 450},
+            {"start": 6296, "end": 6454, "up": 533, "floor": 446},
+            # {"start": 8854, "end": 9011, "up": 533, "floor": 450},
         ]
 
 
@@ -116,7 +131,11 @@ def oneLevel(screen):
         for hole in Obstacles.allHoles:
             if floor > hole["start"] and floor < hole["end"] and Moviments.playerY >= Moviments.floor:
                 Moviments.playerY += 8
+                configDead.isDead += 8
 
+                if configDead.isDead >= 130:
+                    configDead.pause.gameOver = True
+                    configDead.isPaused = True
 
         for holder in Obstacles.allHolders:
 
@@ -132,7 +151,13 @@ def oneLevel(screen):
             if (X < holder["start"] or X > holder["end"]) and Moviments.floor == holder["floor"] and Moviments.Type != "jump":
                 Moviments.floor = 552
                 Moviments.Type = "fall"
-            
+
+        allBoxes = [
+            {"start": 3061, "end": 3218, "up": 533, "floor": 450},
+            {"start": 6296, "end": 6454, "up": 533, "floor": 446},
+            # {"start": 8854, "end": 9011, "up": 533, "floor": 450},
+        ]
+        
         for box in Obstacles.allBoxes:
             # Subir na caixa
             if Y < box["up"] and box["start"] < X < box["end"] and Moviments.Type == "fall":
@@ -200,41 +225,57 @@ def oneLevel(screen):
             if Moviments.Type == "jump":
                 Moviments.Type = "fall"
 
+    coinsPositions = [
+        {"X": 1300, "Y": 438-39},
+        {"X": 1370, "Y": 438-39},
+        {"X": 1440, "Y": 438-39},
+        
+        {"X": 2537, "Y": 438-39},
+        {"X": 2607, "Y": 438-39},
+        {"X": 2677, "Y": 438-39},
+
+        {"X": 4000, "Y": 630-39},
+        {"X": 3720, "Y": 438-39},
+        {"X": 3790, "Y": 438-39},
+
+    ]
+    monstersPositions = [
+        {"start": 2105, "end": 3062, "floor": 592, "type": 0},
+        {"start": 3220, "end": 4188, "floor": 592, "type": 1},
+        {"start": 5052, "end": 5873, "floor": 230, "type": 2},
+    ]
 
     player = Player()
 
-    class Monsters:
-        monster = monsters(False)["Monster"]()
-        monster2 = monsters(False)["Monster2"]()
-        monster3 = monsters(False)["Monster3"]()
-        monster4 = monsters(False)["Monster4"]()
-        monster5 = monsters(False)["Monster5"]()
-
     allSpritesGroup = pygame.sprite.Group()
     monsterGroup = pygame.sprite.Group()
+    coinsGroup = pygame.sprite.Group()
 
     allSpritesGroup.add(player)
 
-    allSpritesGroup.add(Monsters.monster)
-    allSpritesGroup.add(Monsters.monster2)
-    allSpritesGroup.add(Monsters.monster3)
-    allSpritesGroup.add(Monsters.monster4)
-    allSpritesGroup.add(Monsters.monster5)
+    for c in coinsPositions:
+        coin = Coins(c["X"], c["Y"])
 
-    monsterGroup.add(Monsters.monster)
-    monsterGroup.add(Monsters.monster2)
-    monsterGroup.add(Monsters.monster3)
-    monsterGroup.add(Monsters.monster4)
-    monsterGroup.add(Monsters.monster5)
+        allSpritesGroup.add(coin)
+        coinsGroup.add(coin)
+    
+    for m in monstersPositions:
+        monster = Monster(m["start"], m["end"], m["floor"], m["type"])
 
+        allSpritesGroup.add(monster)
+        monsterGroup.add(monster)
+
+
+    coinsAmount = 0
+    txtCoins = pygame.font.Font(MAIN_DIR + "/fonts/Peace_Sans.otf", 30)
 
     def blitAll():
         screen.blit(Images.background, (Moviments.backgroundX, 0))
         screen.blit(Images.pauseImg, Images.pause)
+        screen.blit(Images.coin, (20, 20))
 
-
-    pause = configGame(screen)
-    isPaused = False
+        coinsTxtRender = txtCoins.render(str(coinsAmount), True, "black")
+        screen.blit(coinsTxtRender, (Images.coin.get_width()+40, 20))
 
 
     clock = pygame.time.Clock()
@@ -248,42 +289,65 @@ def oneLevel(screen):
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if Images.pause.collidepoint(event.pos):
-                    pause.Pause = True
-
-            if pause.Pause == True:
-                isPaused = pause.drawPause(event)
+                    configDead.pause.Pause = True
+                    configDead.isPaused = True
+    
+            configDead.actionClickPause = configDead.pause.verifyScreen(event)
 
         move()
 
-        collisions = pygame.sprite.spritecollide(player, monsterGroup, False, pygame.sprite.collide_mask)
+        coinCollision = pygame.sprite.spritecollide(player, coinsGroup, True, pygame.sprite.collide_mask)
+        monsterCollision = pygame.sprite.spritecollide(player, monsterGroup, False, pygame.sprite.collide_mask)
+
+        if len(coinCollision) > 0:
+            coinsAmount += 1
+        
 
         # Game Over
-        if len(collisions) > 0:
-            pause.Pause = True
+        if len(monsterCollision) > 0 and configDead.isGameOver == False:
+            configDead.pause.gameOver = True
+            configDead.isPaused = True
 
+        configDead.pause.drawPause()
 
-        if pause.Pause == False:
-
+        if configDead.isPaused == False:
             blitAll()
-
             allSpritesGroup.draw(screen)
-
             collision()
-
             moviments()
-
             Moviments.diagonally = False
-
             allSpritesGroup.update(Moviments.isMoving)
             Moviments.isMoving = False
 
-
         else:
+            if configDead.pause.gameOver == True:
 
-            if isPaused == "backToGame":
-                pause.Pause = False
-            elif isPaused == "restartGame":
-                Monsters.monster = monsters(True)["Monster"]()
+                # ------- Inserir novos pontos na para o usuario --------
+
+                Afile = open(MAIN_DIR + "/localStorage.json")
+                Ajson = json.load(Afile)
+
+                connection.execute(f"SELECT points from player WHERE id = {Ajson['id']}")
+                result = connection.fetchall()
+
+                newPoints = result[0][0] + coinsAmount
+
+                connection.execute(f"UPDATE player SET points = {newPoints} WHERE id = {Ajson['id']}")
+
+                configDead.isGameOver = True
+                configDead.pause.gameOver = False
+
+
+            if configDead.actionClickPause == "backToGame":
+                configDead.pause.Pause = False
+                configDead.isPaused = False
+            elif configDead.actionClickPause == "restartGame":
                 oneLevel(screen)
-        
+            elif configDead.actionClickPause == "leaveGame":
+                return chooseMode.chooseMode(screen)
+
+
+
+
+
         pygame.display.flip()
