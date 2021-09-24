@@ -21,7 +21,8 @@ def oneLevel(screen):
         isDead = 0
 
     class Images:
-        background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background.png")
+        background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background1.png")
+        background_bridge = pygame.image.load(MAIN_DIR + "/images/levels/level01-background-bridge.png")
         playerSprite = pygame.image.load(MAIN_DIR + "/images/heroi/allpersons.png")
         pauseImg = pygame.image.load(MAIN_DIR + "/images/levels/pause.png")
         pause = pauseImg.get_rect(topleft=(screen.get_width()-pauseImg.get_width()-20, 20))
@@ -100,8 +101,8 @@ def oneLevel(screen):
     class Obstacles():
         allHoles = [
             {"start": 1885-15, "end": 2104-15},
-            {"start": 4187-10, "end": 4467-13},
-            {"start": 7188-13, "end": 7552-30},
+            {"start": 4223-10, "end": 4467-13},
+            {"start": 7311-13, "end": 7552-30},
         ]
 
         allHolders = [
@@ -116,9 +117,9 @@ def oneLevel(screen):
         ]
 
         allBoxes = [
-            {"start": 3061, "end": 3218, "up": 533, "floor": 450},
-            {"start": 6296, "end": 6454, "up": 533, "floor": 446},
-            # {"start": 8854, "end": 9011, "up": 533, "floor": 450},
+            {"start": 3062, "end": 3240, "up": 546, "floor": 456},
+            {"start": 6296, "end": 6475, "up": 542, "floor": 452},
+            {"start": 8854, "end": 9011, "up": 545, "floor": 455},
         ]
 
 
@@ -144,7 +145,7 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
             #Subir na plataforma
-            if Y + 93 <= holder["up"] and holder["start"] < X < holder["end"] and Moviments.Type == "fall":
+            if Y + 93 <= holder["up"] and holder["start"]-52 < X < holder["end"]+70 and Moviments.Type == "fall":
                 Moviments.floor = holder["floor"]
 
             # Descer da plataforma
@@ -152,14 +153,9 @@ def oneLevel(screen):
                 Moviments.floor = 552
                 Moviments.Type = "fall"
 
-        allBoxes = [
-            {"start": 3061, "end": 3218, "up": 533, "floor": 450},
-            {"start": 6296, "end": 6454, "up": 533, "floor": 446},
-            # {"start": 8854, "end": 9011, "up": 533, "floor": 450},
-        ]
-        
         for box in Obstacles.allBoxes:
             # Subir na caixa
+            
             if Y < box["up"] and box["start"] < X < box["end"] and Moviments.Type == "fall":
                 Moviments.floor = box["floor"]
 
@@ -169,16 +165,18 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X >= box["start"] and X < box["end"] -150 and Y > box["up"]:
+            if X > box["start"] and X < box["end"] -150 and Y > box["up"] - 99:
                 Moviments.backgroundX = (box["start"] *-1) + 555 + 52
+                Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
-            if X <= box["end"] and X > box["start"] +150 and Y > box["up"]:
+            if X <= box["end"] and X > box["start"] +150 and Y > box["up"] - 99:
                 Moviments.backgroundX = (box["end"] *-1) + 550 + 52
+                Moviments.isMoving = False
 
     def moviments():
         if Moviments.Type == "jump":
-            if Moviments.playerY > Moviments.floor -220:
+            if Moviments.playerY > Moviments.floor -220 and Moviments.playerY <= 552:
                 Moviments.playerY -= 8
             else:
                 Moviments.Type = "fall"
@@ -189,14 +187,14 @@ def oneLevel(screen):
             else:
                 Moviments.Type = "stopped"
 
-        if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True:
+        if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.playerX < 570:
                 Moviments.playerX += 5
             else:
                 Moviments.backgroundX -= 5
                 Moviments.isMoving = Moviments.Side
 
-        elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True:
+        elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
                 Moviments.playerX -= 5
             elif Moviments.backgroundX != 0:
@@ -235,14 +233,22 @@ def oneLevel(screen):
         {"X": 2677, "Y": 438-39},
 
         {"X": 4000, "Y": 630-39},
+
         {"X": 3720, "Y": 438-39},
         {"X": 3790, "Y": 438-39},
+
+        {"X": 5620, "Y": 330-39},
+        {"X": 5690, "Y": 330-39},
+        {"X": 5760, "Y": 330-39},
+
 
     ]
     monstersPositions = [
         {"start": 2105, "end": 3062, "floor": 592, "type": 0},
         {"start": 3220, "end": 4188, "floor": 592, "type": 1},
         {"start": 5052, "end": 5873, "floor": 230, "type": 2},
+        {"start": 4470, "end": 6296, "floor": 592, "type": 0},
+        {"start": 5300, "end": 6296, "floor": 592, "type": 1},
     ]
 
     player = Player()
@@ -270,7 +276,10 @@ def oneLevel(screen):
     txtCoins = pygame.font.Font(MAIN_DIR + "/fonts/Peace_Sans.otf", 30)
 
     def blitAll():
-        screen.blit(Images.background, (Moviments.backgroundX, 0))
+        if (Moviments.backgroundX * -1) + 552 + 52 > 7220 and (Moviments.backgroundX * -1) + 552 + 52 < 7552 and Moviments.playerY == 552:
+            screen.blit(Images.background_bridge, (Moviments.backgroundX, 0))
+        else:
+            screen.blit(Images.background, (Moviments.backgroundX, 0))
         screen.blit(Images.pauseImg, Images.pause)
         screen.blit(Images.coin, (20, 20))
 
@@ -313,8 +322,8 @@ def oneLevel(screen):
         if configDead.isPaused == False:
             blitAll()
             allSpritesGroup.draw(screen)
-            collision()
             moviments()
+            collision()
             Moviments.diagonally = False
             allSpritesGroup.update(Moviments.isMoving)
             Moviments.isMoving = False
@@ -336,6 +345,7 @@ def oneLevel(screen):
 
                 configDead.isGameOver = True
                 configDead.pause.gameOver = False
+                print("Atualizando")
 
 
             if configDead.actionClickPause == "backToGame":
@@ -345,9 +355,6 @@ def oneLevel(screen):
                 oneLevel(screen)
             elif configDead.actionClickPause == "leaveGame":
                 return chooseMode.chooseMode(screen)
-
-
-
 
 
         pygame.display.flip()

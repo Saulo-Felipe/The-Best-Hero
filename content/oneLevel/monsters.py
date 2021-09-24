@@ -23,6 +23,8 @@ class Monster(pygame.sprite.Sprite):
             y = 291
             x = 112
             altura = 57
+        elif Type == 3:
+            
 
 
 
