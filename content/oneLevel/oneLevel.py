@@ -9,7 +9,7 @@ import content.chooseMode as chooseMode
 import json
 from root import connection
 from .trophy import Trophy
-from .winGame import WinGame
+
 
 
 def oneLevel(screen):
@@ -21,8 +21,7 @@ def oneLevel(screen):
         isGameOver = False
         actionClickPause = False
         isDead = 0
-    class configWin:
-        win = True
+        winCount = 0
 
     class Images:
         background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background1.png")
@@ -193,16 +192,16 @@ def oneLevel(screen):
 
         if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.playerX < 570:
-                Moviments.playerX += 10
+                Moviments.playerX += 6
             else:
-                Moviments.backgroundX -= 10
+                Moviments.backgroundX -= 6
                 Moviments.isMoving = Moviments.Side
 
         elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
-                Moviments.playerX -= 5
+                Moviments.playerX -= 6
             elif Moviments.backgroundX != 0:
-                Moviments.backgroundX += 10
+                Moviments.backgroundX += 6
                 Moviments.isMoving = Moviments.Side
 
     def move():
@@ -345,7 +344,7 @@ def oneLevel(screen):
 
         if len(winGameCollision) > 0:
             configDead.isPaused = True
-            configWin.win = True
+            configDead.pause.win = True
 
         if len(coinCollision) > 0:
             coinsAmount += 1
@@ -355,7 +354,7 @@ def oneLevel(screen):
             configDead.pause.gameOver = True
             configDead.isPaused = True
 
-        configDead.pause.drawPause()
+        configDead.pause.drawPause(coinsAmount)
 
         if configDead.isPaused == False:
             blitAll()
@@ -367,8 +366,7 @@ def oneLevel(screen):
             Moviments.isMoving = False
 
         else:
-            if configDead.pause.gameOver == True:
-                
+            if configDead.pause.win == True and configDead.winCount == 0:
 
                 # ------- Inserir novos pontos na para o usuario --------
 
@@ -384,15 +382,14 @@ def oneLevel(screen):
 
                 configDead.isGameOver = True
                 configDead.pause.gameOver = False
-                print("Atualizando")
 
-            elif configWin.win == True:
-                WinGame(screen)
+                configDead.winCount = 1
 
 
             if configDead.actionClickPause == "backToGame":
                 configDead.pause.Pause = False
                 configDead.isPaused = False
+                configDead.pause.pauseCount = configDead.pause.winCount = configDead.pause.gameOverCount = 0
             elif configDead.actionClickPause == "restartGame":
                 oneLevel(screen)
             elif configDead.actionClickPause == "leaveGame":

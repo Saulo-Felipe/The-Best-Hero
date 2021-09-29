@@ -90,9 +90,9 @@ def rankingScreen(screen):
                     break
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:
+                if event.button == 5:
                     positions.scrollY -= 10
-                if event.button == 5 and positions.scrollY != 0:
+                if event.button == 4 and positions.scrollY != 0:
                     positions.scrollY += 10
                 
         

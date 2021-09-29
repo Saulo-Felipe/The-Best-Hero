@@ -62,9 +62,9 @@ class Monster(pygame.sprite.Sprite):
 
         # Movimentos do player
         if isMoving == "right":
-            self.monsterStart -= 10
+            self.monsterStart -= 6
         elif isMoving == "left":
-            self.monsterStart += 10
+            self.monsterStart += 6
             
         # Movimentos automatico do monstro
         if self.direction == "right":
@@ -90,11 +90,6 @@ class Monster(pygame.sprite.Sprite):
 
         self.index += self.velocity
         self.mask = pygame.mask.from_surface(self.image)
-
-
-
-        # print("Movimento atual: ", self.direction, "Distancia: ", self.moveDistance)
-
 
         if self.monsterStart <= self.start:
             animationMonster.monster = "left"

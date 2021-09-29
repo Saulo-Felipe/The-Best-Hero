@@ -30,9 +30,9 @@ class Trophy(pygame.sprite.Sprite):
         self.index += 0.05
 
         if isMoving == "right":
-            self.positionX -= 10
+            self.positionX -= 6
         elif isMoving == "left":
-            self.positionX += 10
+            self.positionX += 6
         
         self.image = self.frame[int(self.index)]
         self.rect.topleft = (self.positionX, self.positionY)
