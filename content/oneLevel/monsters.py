@@ -3,6 +3,7 @@ import pygame
 from root import MAIN_DIR
 
 monsterSpriteSheet = pygame.image.load(MAIN_DIR + "/images/monsters/allMonsters.png")
+bigMonster = pygame.image.load(MAIN_DIR + "/images/monsters/gigant-monster-sprite.png")
 
 class animationMonster:
     monster = "right"
@@ -14,6 +15,8 @@ class Monster(pygame.sprite.Sprite):
         y = 0
         x = 71
         altura = 52
+        self.time = 4
+        self.velocity = 0.1
 
         if Type == 0:
             y = 0
@@ -23,8 +26,13 @@ class Monster(pygame.sprite.Sprite):
             y = 291
             x = 112
             altura = 57
+            self.velocity = 0.15
         elif Type == 3:
-            
+            y = 0
+            x = 140
+            altura = 144
+            self.time = 8
+            self.velocity = 0.15
 
 
 
@@ -37,8 +45,11 @@ class Monster(pygame.sprite.Sprite):
         self.direction = "right"
 
         self.frame = []
-        for c in range(4):
-            cutImage = monsterSpriteSheet.subsurface((c*x, y), (x, altura))
+        for c in range(self.time):
+            if Type == 3:
+                cutImage = bigMonster.subsurface((c*x, y), (x, altura))
+            else:
+                cutImage = monsterSpriteSheet.subsurface((c*x, y), (x, altura))
             self.frame.append(cutImage.convert_alpha())
 
         self.index = 0
@@ -51,9 +62,9 @@ class Monster(pygame.sprite.Sprite):
 
         # Movimentos do player
         if isMoving == "right":
-            self.monsterStart -= 5
+            self.monsterStart -= 10
         elif isMoving == "left":
-            self.monsterStart += 5
+            self.monsterStart += 10
             
         # Movimentos automatico do monstro
         if self.direction == "right":
@@ -74,10 +85,10 @@ class Monster(pygame.sprite.Sprite):
             self.direction = "right"
             
         # Animation
-        if self.index >= 3:
+        if self.index >= self.time-1:
             self.index = 0
 
-        self.index += 0.1
+        self.index += self.velocity
         self.mask = pygame.mask.from_surface(self.image)
 
 

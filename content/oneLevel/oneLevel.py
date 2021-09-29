@@ -8,6 +8,8 @@ from .coins import Coins
 import content.chooseMode as chooseMode
 import json
 from root import connection
+from .trophy import Trophy
+from .winGame import WinGame
 
 
 def oneLevel(screen):
@@ -19,6 +21,8 @@ def oneLevel(screen):
         isGameOver = False
         actionClickPause = False
         isDead = 0
+    class configWin:
+        win = True
 
     class Images:
         background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background1.png")
@@ -165,13 +169,13 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X > box["start"] and X < box["end"] -150 and Y > box["up"] - 99:
+            if X > box["start"] and X < box["end"]-160 and Y -99 < 552 and Y > box["up"]:
                 Moviments.backgroundX = (box["start"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
-            if X <= box["end"] and X > box["start"] +150 and Y > box["up"] - 99:
-                Moviments.backgroundX = (box["end"] *-1) + 550 + 52
+            if X < box["end"] and X > box["start"]+160 and Y -99 < 552 and Y > box["up"]:
+                Moviments.backgroundX = (box["end"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
     def moviments():
@@ -189,16 +193,16 @@ def oneLevel(screen):
 
         if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.playerX < 570:
-                Moviments.playerX += 5
+                Moviments.playerX += 10
             else:
-                Moviments.backgroundX -= 5
+                Moviments.backgroundX -= 10
                 Moviments.isMoving = Moviments.Side
 
         elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 552:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
                 Moviments.playerX -= 5
             elif Moviments.backgroundX != 0:
-                Moviments.backgroundX += 5
+                Moviments.backgroundX += 10
                 Moviments.isMoving = Moviments.Side
 
     def move():
@@ -241,7 +245,29 @@ def oneLevel(screen):
         {"X": 5690, "Y": 330-39},
         {"X": 5760, "Y": 330-39},
 
+        {"X": 7900, "Y": 433-39},
+        {"X": 7970, "Y": 433-39},
 
+        {"X": 8330, "Y": 308-39},
+        {"X": 8400, "Y": 308-39},
+        {"X": 8470, "Y": 308-39},
+
+        {"X": 8905, "Y": 540-39},
+
+        # ----- Pilha de moedas -----
+        {"X": 9670, "Y": 590-39},
+        {"X": 9740, "Y": 590-39},
+        {"X": 9810, "Y": 590-39},
+        {"X": 9880, "Y": 590-39},
+
+        {"X": 9703, "Y": 590-78},
+        {"X": 9773, "Y": 590-78},
+        {"X": 9843, "Y": 590-78},
+
+        {"X": 9736, "Y": 590-117},
+        {"X": 9806, "Y": 590-117},
+
+        {"X": 9769, "Y": 590-156},
     ]
     monstersPositions = [
         {"start": 2105, "end": 3062, "floor": 592, "type": 0},
@@ -249,15 +275,23 @@ def oneLevel(screen):
         {"start": 5052, "end": 5873, "floor": 230, "type": 2},
         {"start": 4470, "end": 6296, "floor": 592, "type": 0},
         {"start": 5300, "end": 6296, "floor": 592, "type": 1},
+        {"start": 1130, "end": 1580, "floor": 366, "type": 2},
+        {"start": 6464, "end": 7160, "floor": 592, "type": 0},
+        {"start": 7571, "end": 8840, "floor": 500, "type": 3},
+        {"start": 9100, "end": 9990, "floor": 555, "type": 2},
     ]
 
     player = Player()
+    trophy = Trophy()
 
     allSpritesGroup = pygame.sprite.Group()
     monsterGroup = pygame.sprite.Group()
     coinsGroup = pygame.sprite.Group()
+    trophyGroup = pygame.sprite.Group()
 
     allSpritesGroup.add(player)
+    allSpritesGroup.add(trophy)
+    trophyGroup.add(trophy)
 
     for c in coinsPositions:
         coin = Coins(c["X"], c["Y"])
@@ -277,9 +311,9 @@ def oneLevel(screen):
 
     def blitAll():
         if (Moviments.backgroundX * -1) + 552 + 52 > 7220 and (Moviments.backgroundX * -1) + 552 + 52 < 7552 and Moviments.playerY == 552:
-            screen.blit(Images.background_bridge, (Moviments.backgroundX, 0))
-        else:
-            screen.blit(Images.background, (Moviments.backgroundX, 0))
+            Images.background = Images.background_bridge
+        
+        screen.blit(Images.background, (Moviments.backgroundX, 0))
         screen.blit(Images.pauseImg, Images.pause)
         screen.blit(Images.coin, (20, 20))
 
@@ -307,11 +341,15 @@ def oneLevel(screen):
 
         coinCollision = pygame.sprite.spritecollide(player, coinsGroup, True, pygame.sprite.collide_mask)
         monsterCollision = pygame.sprite.spritecollide(player, monsterGroup, False, pygame.sprite.collide_mask)
+        winGameCollision = pygame.sprite.spritecollide(player, trophyGroup, False, pygame.sprite.collide_mask)
+
+        if len(winGameCollision) > 0:
+            configDead.isPaused = True
+            configWin.win = True
 
         if len(coinCollision) > 0:
             coinsAmount += 1
         
-
         # Game Over
         if len(monsterCollision) > 0 and configDead.isGameOver == False:
             configDead.pause.gameOver = True
@@ -330,6 +368,7 @@ def oneLevel(screen):
 
         else:
             if configDead.pause.gameOver == True:
+                
 
                 # ------- Inserir novos pontos na para o usuario --------
 
@@ -347,6 +386,9 @@ def oneLevel(screen):
                 configDead.pause.gameOver = False
                 print("Atualizando")
 
+            elif configWin.win == True:
+                WinGame(screen)
+
 
             if configDead.actionClickPause == "backToGame":
                 configDead.pause.Pause = False
@@ -355,6 +397,8 @@ def oneLevel(screen):
                 oneLevel(screen)
             elif configDead.actionClickPause == "leaveGame":
                 return chooseMode.chooseMode(screen)
+            
+
 
 
         pygame.display.flip()
