@@ -12,9 +12,9 @@ screen = pygame.display.set_mode((1140, 724))
 pygame.init()
 
 # oneLevel.oneLevel(screen)
-# mainScreen.mainScreen(screen)
+mainScreen.mainScreen(screen)
 # rankingScreen(screen)
 # threeLevel.threeLevel(screen)
-twoLevel.twoLevel(screen)
+# twoLevel.twoLevel(screen)
 
 pygame.quit()
