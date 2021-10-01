@@ -3,7 +3,7 @@ from root import MAIN_DIR
 from root import connection
 
 class Images:
-    backgroundBlurd = pygame.image.load(MAIN_DIR + '/images/mainScreen/backgroundBlack.png')
+    backgroundBlurd = pygame.image.load(MAIN_DIR + '/images/backgroundBlack.png')
 
     closeImg = pygame.image.load(MAIN_DIR + '/images/mainScreen/close-icon.png')
     closeRegister = closeImg.get_rect(topleft=( (1140-350)/2+ 330, (724-450)/2 - 25))
@@ -106,6 +106,7 @@ def drawRegister(screen, event, state):
                     connection.execute(f"INSERT INTO player (username, email, password) VALUES ('{ configTxt.usernameContent }', '{ configTxt.emailContent }', '{ configTxt.passwordContent }')")
                     configTxt.errorMsg = ""
                     configTxt.successMsg = "Usuário cadastrado com sucesso!"
+                    return 
 
                 else:
                     configTxt.errorMsg = "Nome de usuario já está em uso"

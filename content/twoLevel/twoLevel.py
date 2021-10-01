@@ -12,9 +12,7 @@ from .trophy import Trophy
 from pygame.locals import *
 
 
-
-
-def oneLevel(screen):
+def twoLevel(screen):
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
     class configDead:
@@ -26,8 +24,7 @@ def oneLevel(screen):
         winCount = 0
 
     class Images:
-        background = pygame.image.load(MAIN_DIR + "/images/levels/level01-background1.png")
-        background_bridge = pygame.image.load(MAIN_DIR + "/images/levels/level01-background-bridge.png")
+        background = pygame.image.load(MAIN_DIR + "/images/levels/level02-background.png")
         playerSprite = pygame.image.load(MAIN_DIR + "/images/heroi/allpersons.png")
         pauseImg = pygame.image.load(MAIN_DIR + "/images/levels/pause.png")
         pause = pauseImg.get_rect(topleft=(screen.get_width()-pauseImg.get_width()-20, 20))
@@ -38,8 +35,8 @@ def oneLevel(screen):
         backgroundY = 0
 
         playerX = 100
-        playerY = 552
-        floor = 552
+        playerY = 540
+        floor = 540
         isUp = False
 
         Type = "stopped"
@@ -105,37 +102,41 @@ def oneLevel(screen):
 
     class Obstacles():
         allHoles = [
-            {"start": 1885-15, "end": 2104-15},
-            {"start": 4223-10, "end": 4467-13},
-            {"start": 7311-13, "end": 7552-30},
+            {"start": 1135, "end": 1328},
+            {"start": 2007, "end": 2188},
+            {"start": 3070, "end": 3353},
+            {"start": 4236, "end": 4474},
+            {"start": 5357, "end": 5548},
+            {"start": 5705, "end": 5875},
+            {"start": 6035, "end": 6185},
+            {"start": 6346, "end": 6488},
+            {"start": 6649, "end": 6823},
         ]
 
         allHolders = [
-            {"start": 1244, "end": 1528, "down": 495, "up": 443, "floor": 348},
-            {"start": 2485, "end": 2770, "down": 501, "up": 448, "floor": 353},
-            {"start": 3639, "end": 3923, "down": 498, "up": 445, "floor": 350},
-            {"start": 4760, "end": 5044, "down": 502, "up": 449, "floor": 354},
-            {"start": 5053, "end": 5336, "down": 391, "up": 338, "floor": 244},
-            {"start": 5563, "end": 5847, "down": 386, "up": 333, "floor": 239},
-            {"start": 7827, "end": 8111, "down": 506, "up": 453, "floor": 359},
-            {"start": 8274, "end": 8559, "down": 384, "up": 331, "floor": 237},
+            {"start": 708-32, "end": 980, "down": 498, "up": 440, "floor": 444-97},
+            {"start": 2441-32, "end": 2712, "down": 505, "up": 447, "floor": 447-97},
+            {"start": 3855-32, "end": 4126, "down": 501, "up": 442, "floor": 439-97},
+            {"start": 4456-32, "end": 4729, "down": 432, "up": 374, "floor": 373-97},
+            {"start": 4215-32, "end": 4486, "down": 338, "up": 280, "floor": 281-97},
+            {"start": 5150-32, "end": 5421, "down": 493, "up": 436, "floor": 433-97},
+            {"start": 7238-32, "end": 7509, "down": 483, "up": 424, "floor": 421-97},
+            {"start": 7575-32, "end": 7846, "down": 341, "up": 283, "floor": 282-97},
+            {"start": 8500-32, "end": 8771, "down": 443, "up": 385, "floor": 383-97},
         ]
 
         allBoxes = [
-            {"start": 3062, "end": 3240, "up": 546, "floor": 456},
-            {"start": 6296, "end": 6475, "up": 542, "floor": 452},
-            {"start": 8854, "end": 9011, "up": 545, "floor": 455},
+            {"start": 3620, "end": 3683, "up": 555, "floor": 555-95},
         ]
 
 
     def collision():
-        floor = (Moviments.backgroundX - 570)*(-1)
+        floor = (Moviments.backgroundX - 600)*(-1)
         Y = Moviments.playerY
-        X = (Moviments.backgroundX * -1) + 552 + 52
-
+        X = (Moviments.backgroundX * -1) + 540 + 52
 
         for hole in Obstacles.allHoles:
-            if floor > hole["start"] and floor < hole["end"] and Moviments.playerY >= Moviments.floor:
+            if floor > hole["start"] and floor < hole["end"] and Moviments.playerY >= 540:
                 Moviments.playerY += 8
                 configDead.isDead += 8
 
@@ -155,33 +156,36 @@ def oneLevel(screen):
 
             # Descer da plataforma
             if (X < holder["start"] or X > holder["end"]) and Moviments.floor == holder["floor"] and Moviments.Type != "jump":
-                Moviments.floor = 552
+                Moviments.floor = 540
                 Moviments.Type = "fall"
 
         for box in Obstacles.allBoxes:
+            boxWidth = box["end"] - box["start"]
+
             # Subir na caixa
-            
             if Y < box["up"] and box["start"] < X < box["end"] and Moviments.Type == "fall":
                 Moviments.floor = box["floor"]
 
             # Descer da caixa
             if (X < box["start"] or X > box["end"]) and Moviments.floor == box["floor"] and Moviments.Type != "jump":
-                Moviments.floor = 552
+                Moviments.floor = 540
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X > box["start"] and X < box["end"]-160 and Y -99 < 552 and Y > box["up"]:
-                Moviments.backgroundX = (box["start"] *-1) + 555 + 52
+            if X+20 >= box["start"] and X < box["end"]-boxWidth and Y+50 > box["up"]:
+                Moviments.backgroundX = box["start"]*-1 +610
                 Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
-            if X < box["end"] and X > box["start"]+160 and Y -99 < 552 and Y > box["up"]:
-                Moviments.backgroundX = (box["end"] *-1) + 555 + 52
+            if X > box["start"]+40 and X < box["end"] and Y+50 > box["up"]:
+
+            # if X < box["end"] and X > box["start"] and Y -99 < 540 and Y > box["up"]:
+                Moviments.backgroundX = box["end"] * -1 + 590
                 Moviments.isMoving = False
 
     def moviments():
         if Moviments.Type == "jump":
-            if Moviments.playerY > Moviments.floor -220 and Moviments.playerY <= 552:
+            if Moviments.playerY > Moviments.floor -220 and Moviments.playerY <= 540:
                 Moviments.playerY -= 8
             else:
                 Moviments.Type = "fall"
@@ -192,14 +196,14 @@ def oneLevel(screen):
             else:
                 Moviments.Type = "stopped"
 
-        if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True and Moviments.playerY <= 552:
+        if Moviments.Type != "stopped" and Moviments.Side == "right" and Moviments.diagonally == True and Moviments.playerY <= 540:
             if Moviments.playerX < 570:
                 Moviments.playerX += 6
             else:
                 Moviments.backgroundX -= 6
                 Moviments.isMoving = Moviments.Side
 
-        elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 552:
+        elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 540:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
                 Moviments.playerX -= 6
             elif Moviments.backgroundX != 0:
@@ -229,57 +233,13 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
     coinsPositions = [
-        {"X": 1300, "Y": 438-39},
-        {"X": 1370, "Y": 438-39},
-        {"X": 1440, "Y": 438-39},
-        
-        {"X": 2537, "Y": 438-39},
-        {"X": 2607, "Y": 438-39},
-        {"X": 2677, "Y": 438-39},
-
-        {"X": 4000, "Y": 630-39},
-
-        {"X": 3720, "Y": 438-39},
-        {"X": 3790, "Y": 438-39},
-
-        {"X": 5620, "Y": 330-39},
-        {"X": 5690, "Y": 330-39},
-        {"X": 5760, "Y": 330-39},
-
-        {"X": 7900, "Y": 433-39},
-        {"X": 7970, "Y": 433-39},
-
-        {"X": 8330, "Y": 308-39},
-        {"X": 8400, "Y": 308-39},
-        {"X": 8470, "Y": 308-39},
-
-        {"X": 8905, "Y": 540-39},
-
-        # ----- Pilha de moedas -----
-        {"X": 9670, "Y": 590-39},
-        {"X": 9740, "Y": 590-39},
-        {"X": 9810, "Y": 590-39},
-        {"X": 9880, "Y": 590-39},
-
-        {"X": 9703, "Y": 590-78},
-        {"X": 9773, "Y": 590-78},
-        {"X": 9843, "Y": 590-78},
-
-        {"X": 9736, "Y": 590-117},
-        {"X": 9806, "Y": 590-117},
-
-        {"X": 9769, "Y": 590-156},
+        {"X": 750, "Y": 415-39},
+        {"X": 820, "Y": 415-39},
+        {"X": 890, "Y": 415-39},
     ]
     monstersPositions = [
-        {"start": 2105, "end": 3062, "floor": 592, "type": 0},
-        {"start": 3220, "end": 4188, "floor": 592, "type": 1},
-        {"start": 5052, "end": 5873, "floor": 230, "type": 2},
-        {"start": 4470, "end": 6296, "floor": 592, "type": 0},
-        {"start": 5300, "end": 6296, "floor": 592, "type": 1},
-        {"start": 1130, "end": 1580, "floor": 366, "type": 2},
-        {"start": 6464, "end": 7160, "floor": 592, "type": 0},
-        {"start": 7571, "end": 8840, "floor": 500, "type": 3},
-        {"start": 9100, "end": 9990, "floor": 555, "type": 2},
+        {"start": 2189, "end": 3070-105, "floor": 625-105, "type": 0},
+        {"start": 660, "end": 1150, "floor": 415-57, "type": 1},
     ]
 
     player = Player()
@@ -311,9 +271,6 @@ def oneLevel(screen):
     txtCoins = pygame.font.Font(MAIN_DIR + "/fonts/Peace_Sans.otf", 30)
 
     def blitAll():
-        if (Moviments.backgroundX * -1) + 552 + 52 > 7220 and (Moviments.backgroundX * -1) + 552 + 52 < 7552 and Moviments.playerY == 552:
-            Images.background = Images.background_bridge
-        
         screen.blit(Images.background, (Moviments.backgroundX, 0))
         screen.blit(Images.pauseImg, Images.pause)
         screen.blit(Images.coin, (20, 20))
@@ -394,7 +351,7 @@ def oneLevel(screen):
                 configDead.isPaused = False
                 configDead.pause.pauseCount = configDead.pause.winCount = configDead.pause.gameOverCount = 0
             elif configDead.actionClickPause == "restartGame":
-                oneLevel(screen)
+                twoLevel(screen)
             elif configDead.actionClickPause == "leaveGame":
                 return chooseMode.chooseMode(screen)
             

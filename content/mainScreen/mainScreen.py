@@ -99,7 +99,6 @@ def mainScreen(screen):
                     for letter in range(len(aceptedLetters)):
                         if event.unicode == aceptedLetters[letter]:
                             inputValues.state = aceptedLetters[letter]
-                            break
             
             if event.type == pygame.MOUSEBUTTONUP:
                 userStatus = IsAuthenticated.verify()["isAuthenticated"]

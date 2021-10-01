@@ -2,6 +2,7 @@ import pygame
 
 from .oneLevel import oneLevel
 from .twoLevel import twoLevel
+from .threeLevel import threeLevel
 from .ranking import rankingScreen
 from .mainScreen import mainScreen
 
@@ -67,10 +68,13 @@ def chooseMode(screen):
                     if gameOptions.rects[e].collidepoint(pos) and gameOptions.masks[e].get_at(clickPosition):
                         
                         choosing = False
-                        if e == 1:
+
+                        if e == 0:
+                            return twoLevel.twoLevel(screen)                        
+                        elif e == 1:
                             return oneLevel.oneLevel(screen)
-                        elif e == 0:
-                            return twoLevel(screen)
+                        elif e == 2:
+                            return threeLevel.threeLevel(screen)
                         elif e == 3:
                             return rankingScreen(screen)
 

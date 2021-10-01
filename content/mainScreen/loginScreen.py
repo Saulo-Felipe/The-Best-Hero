@@ -38,7 +38,7 @@ class Colors:
         Colors.password = "gray"
 
 class Images:
-    backgroundBlurd = pygame.image.load(MAIN_DIR + '/images/mainScreen/backgroundBlack.png')
+    backgroundBlurd = pygame.image.load(MAIN_DIR + '/images/backgroundBlack.png')
 
     closeImg = pygame.image.load(MAIN_DIR + '/images/mainScreen/close-icon.png')
     closeLogin = closeImg.get_rect(topleft=( (1140-350)/2+ 330, (724-400)/2 - 25))
