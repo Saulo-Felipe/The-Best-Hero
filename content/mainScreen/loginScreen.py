@@ -91,12 +91,12 @@ def drawLogin(screen, event, state):
             result = connection.fetchall()
 
             if len(result) != 0:
-                if result[0][2] == configTxt.passwordContent:
+                if result[0][3] == configTxt.passwordContent:
 
                     saveLogin = {
                         "isAuthenticated": True,
                         "id": result[0][0],
-                        "username": result[0][1],
+                        "username": result[0][2],
                         "email": result[0][3]
                     }
 
