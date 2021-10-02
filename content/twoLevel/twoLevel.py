@@ -81,8 +81,6 @@ def twoLevel(screen):
             if Moviments.Type == "walk" and Moviments.Side == "left":
                 self.image = pygame.transform.flip(self.spriteFrames[int(self.frameIndex)], True, False)
                 Moviments.Type = "stopped"
-
-
             elif Moviments.Type == "walk" and Moviments.Side == "right":
                 self.image = self.spriteFrames[int(self.frameIndex)]
                 Moviments.Type = "stopped"
@@ -91,7 +89,7 @@ def twoLevel(screen):
                 self.image = pygame.transform.flip(self.spriteFrames[int(self.frameIndex) + 5], True, False)
             elif Moviments.Type == "jump" and Moviments.Side == "right":
                 self.image = self.spriteFrames[int(self.frameIndex) + 5]
-            
+
             elif Moviments.Type == "fall" and Moviments.Side == "left":
                 self.image = pygame.transform.flip(self.spriteFrames[6], True, False)
             elif Moviments.Type == "fall" and Moviments.Side == "right":
@@ -118,7 +116,7 @@ def twoLevel(screen):
             {"start": 2441-32, "end": 2712, "down": 505, "up": 447, "floor": 447-97},
             {"start": 3855-32, "end": 4126, "down": 501, "up": 442, "floor": 439-97},
             {"start": 4456-32, "end": 4729, "down": 432, "up": 374, "floor": 373-97},
-            {"start": 4215-32, "end": 4486, "down": 338, "up": 280, "floor": 281-97},
+            {"start": 4215-32, "end": 4455, "down": 338, "up": 280, "floor": 281-97},
             {"start": 5150-32, "end": 5421, "down": 493, "up": 436, "floor": 433-97},
             {"start": 7238-32, "end": 7509, "down": 483, "up": 424, "floor": 421-97},
             {"start": 7575-32, "end": 7846, "down": 341, "up": 283, "floor": 282-97},
@@ -127,10 +125,41 @@ def twoLevel(screen):
 
         allBoxes = [
             {"start": 3620, "end": 3683, "up": 555, "floor": 555-95},
+
+            {"start": 1842, "end": 1897, "up": 561, "floor": 561-95},
+            {"start": 1898, "end": 2008, "up": 522, "floor": 522-95},
+            {"start": 1937, "end": 2007, "up": 469, "floor": 469-95},
+
+            {"start": 8103, "end": 8159, "up": 562, "floor": 562-95},
+            {"start": 8159, "end": 8269, "up": 521, "floor": 562-95},
+            {"start": 8200, "end": 8269, "up": 468, "floor": 468-95},
+
+            {"start": 8978, "end": 9041, "up": 557, "floor": 557-95},
+
+            {"start": 9353, "end": 9416, "up": 557, "floor": 557-95},
+
+            {"start": 9707, "end": 9770, "up": 558, "floor": 558-95},
         ]
 
+        coinsPositions = [
+            {"X": 750, "Y": 415-39},
+            {"X": 820, "Y": 415-39},
+            {"X": 890, "Y": 415-39},
 
-    def collision():
+            {"X": 2525, "Y": 612-39},
+            {"X": 2595, "Y": 612-39},
+        ]
+
+        monstersPositions = [
+            {"start": 2400, "end": 3070-105, "floor": 625-105, "type": 0},
+            {"start": 660, "end": 1150, "floor": 415-57, "type": 1},
+            {"start": 1350, "end": 0, "floor": 630-140, "type": 2},
+            {"start": 2338, "end": 0, "floor": 630-140, "type": 3},
+            {"start": 2195, "end": 3060, "floor": 400-50, "type": 5},
+            {"start": 3684-72, "end": 4235-72, "floor": 632-120, "type": 4},
+        ]
+
+    def ObstaclesCollision():
         floor = (Moviments.backgroundX - 600)*(-1)
         Y = Moviments.playerY
         X = (Moviments.backgroundX * -1) + 540 + 52
@@ -163,23 +192,21 @@ def twoLevel(screen):
             boxWidth = box["end"] - box["start"]
 
             # Subir na caixa
-            if Y < box["up"] and box["start"] < X < box["end"] and Moviments.Type == "fall":
+            if Y < box["up"] and (X+20 > box["start"] and X-20 < box["end"]) and Moviments.Type == "fall":
                 Moviments.floor = box["floor"]
 
             # Descer da caixa
-            if (X < box["start"] or X > box["end"]) and Moviments.floor == box["floor"] and Moviments.Type != "jump":
+            if (X+20 < box["start"] or X-20 > box["end"]) and Moviments.floor == box["floor"] and Moviments.Type != "jump":
                 Moviments.floor = 540
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X+20 >= box["start"] and X < box["end"]-boxWidth and Y+50 > box["up"]:
+            if X+20 >= box["start"] and X < box["end"]-boxWidth and Y+player.image.get_height()-10 > box["up"]:
                 Moviments.backgroundX = box["start"]*-1 +610
                 Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
-            if X > box["start"]+40 and X < box["end"] and Y+50 > box["up"]:
-
-            # if X < box["end"] and X > box["start"] and Y -99 < 540 and Y > box["up"]:
+            if X >= box["start"]+boxWidth-10 and X <= box["end"] and Y+player.image.get_height()-10 > box["up"]:
                 Moviments.backgroundX = box["end"] * -1 + 590
                 Moviments.isMoving = False
 
@@ -232,16 +259,24 @@ def twoLevel(screen):
             if Moviments.Type == "jump":
                 Moviments.Type = "fall"
 
-    coinsPositions = [
-        {"X": 750, "Y": 415-39},
-        {"X": 820, "Y": 415-39},
-        {"X": 890, "Y": 415-39},
-    ]
-    monstersPositions = [
-        {"start": 2189, "end": 3070-105, "floor": 625-105, "type": 0},
-        {"start": 660, "end": 1150, "floor": 415-57, "type": 1},
-    ]
+    def updatePoints():
+        # ------- Inserir novos pontos na para o usuario --------
 
+        Afile = open(MAIN_DIR + "/localStorage.json")
+        Ajson = json.load(Afile)
+
+        connection.execute(f"SELECT points from player WHERE id = {Ajson['id']}")
+        result = connection.fetchall()
+
+        newPoints = result[0][0] + coinsAmount
+
+        connection.execute(f"UPDATE player SET points = {newPoints} WHERE id = {Ajson['id']}")
+
+        configDead.isGameOver = True
+        configDead.pause.gameOver = False
+
+        configDead.winCount = 1
+        
     player = Player()
     trophy = Trophy()
 
@@ -254,13 +289,13 @@ def twoLevel(screen):
     allSpritesGroup.add(trophy)
     trophyGroup.add(trophy)
 
-    for c in coinsPositions:
+    for c in Obstacles.coinsPositions:
         coin = Coins(c["X"], c["Y"])
 
         allSpritesGroup.add(coin)
         coinsGroup.add(coin)
     
-    for m in monstersPositions:
+    for m in Obstacles.monstersPositions:
         monster = Monster(m["start"], m["end"], m["floor"], m["type"])
 
         allSpritesGroup.add(monster)
@@ -289,6 +324,7 @@ def twoLevel(screen):
                 exit()
 
             if event.type == pygame.MOUSEBUTTONUP:
+                print("Player Y: ", Moviments.playerY)
                 if Images.pause.collidepoint(event.pos):
                     configDead.pause.Pause = True
                     configDead.isPaused = True
@@ -308,7 +344,8 @@ def twoLevel(screen):
         if len(coinCollision) > 0:
             coinsAmount += 1
             pygame.mixer.music.load(MAIN_DIR + '/sons/coin.wav')
-            pygame.mixer.music.play()        
+            pygame.mixer.music.play()
+
         # Game Over
         if len(monsterCollision) > 0 and configDead.isGameOver == False:
             configDead.pause.gameOver = True
@@ -320,31 +357,14 @@ def twoLevel(screen):
             blitAll()
             allSpritesGroup.draw(screen)
             moviments()
-            collision()
+            ObstaclesCollision()
             Moviments.diagonally = False
             allSpritesGroup.update(Moviments.isMoving)
             Moviments.isMoving = False
 
         else:
             if configDead.pause.win == True and configDead.winCount == 0:
-
-                # ------- Inserir novos pontos na para o usuario --------
-
-                Afile = open(MAIN_DIR + "/localStorage.json")
-                Ajson = json.load(Afile)
-
-                connection.execute(f"SELECT points from player WHERE id = {Ajson['id']}")
-                result = connection.fetchall()
-
-                newPoints = result[0][0] + coinsAmount
-
-                connection.execute(f"UPDATE player SET points = {newPoints} WHERE id = {Ajson['id']}")
-
-                configDead.isGameOver = True
-                configDead.pause.gameOver = False
-
-                configDead.winCount = 1
-
+                updatePoints()
 
             if configDead.actionClickPause == "backToGame":
                 configDead.pause.Pause = False
@@ -354,8 +374,6 @@ def twoLevel(screen):
                 twoLevel(screen)
             elif configDead.actionClickPause == "leaveGame":
                 return chooseMode.chooseMode(screen)
-            
-
 
 
         pygame.display.flip()

@@ -40,26 +40,7 @@ def mainScreen(screen):
 
         selectedSubScreen = False
 
-    # def Clicks(events):
-    #     if events.type == pygame.MOUSEBUTTONUP:
-    #         userStatus = IsAuthenticated.verify()["isAuthenticated"]
-
-    #         if userStatus == False and Rects.enter.collidepoint(events.pos):
-    #             inputValues.selectedSubScreen = "login"
-
-    #         elif userStatus == True and Rects.logout.collidepoint(events.pos):
-    #             Afile = open(MAIN_DIR + "/localStorage.json", "w")
-    #             jsonUpdate = { "isAuthenticated": False }
-    #             json.dump(jsonUpdate, Afile)
-    #             Afile.close()
-            
-    #         if Rects.play.collidepoint(events.pos) and inputValues.selectedSubScreen == False:
-    #             if userStatus == True:
-    #                 return True
-    #             else:
-    #                 inputValues.selectedSubScreen = "login"
-    #                 return False
-
+    TxtWelCome = pygame.font.SysFont("Arial", 20, bold=True)
 
     def BlitAll():
         screen.blit(Images.background, (-1293, -3))
@@ -68,6 +49,9 @@ def mainScreen(screen):
         # Apenas elementos autenticados
         def isAuthenticated():
             if IsAuthenticated.verify()["isAuthenticated"] == True:
+                renderWelCome = TxtWelCome.render(f"Seja Bem Vindo, {IsAuthenticated.verify()['username']}", True, "black")
+                
+                screen.blit(renderWelCome, (60, 60))
                 screen.blit(Images.logout, Rects.logout)
             else:
                 screen.blit(Images.enter, Rects.enter)
@@ -86,7 +70,7 @@ def mainScreen(screen):
     while True:
 
         BlitAll()
-        nextScreen = False #Clicks(event)
+        nextScreen = False
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

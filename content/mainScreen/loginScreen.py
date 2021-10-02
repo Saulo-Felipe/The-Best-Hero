@@ -87,7 +87,7 @@ def drawLogin(screen, event, state):
         if len(configTxt.passwordContent) < 1 or len(configTxt.emailContent) < 1:
             configTxt.errorMsg = "Por favor, preencha todos os campos"
         else:
-            connection.execute(f"SELECT * FROM player WHERE email = '{configTxt.emailContent}' OR username = '{configTxt.emailContent}'")
+            connection.execute(f"SELECT id, username, email, password FROM player WHERE email = '{configTxt.emailContent}' OR username = '{configTxt.emailContent}'")
             result = connection.fetchall()
 
             if len(result) != 0:
@@ -96,8 +96,8 @@ def drawLogin(screen, event, state):
                     saveLogin = {
                         "isAuthenticated": True,
                         "id": result[0][0],
-                        "username": result[0][2],
-                        "email": result[0][3]
+                        "username": result[0][1],
+                        "email": result[0][2]
                     }
 
                     Afile = open(MAIN_DIR + '/localStorage.json', 'w')

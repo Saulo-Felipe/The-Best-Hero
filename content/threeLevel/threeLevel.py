@@ -45,24 +45,28 @@ def threeLevel(screen):
         restart = pygame.image.load(MAIN_DIR + '/images/levels/restart.png')
         configs = pygame.image.load(MAIN_DIR + '/images/levels/config.png')
 
-        exitGameRect = exitGame.get_rect(topleft=(736, 180))
-        restartRect = restart.get_rect(topleft=(736, 250))
-        configsRect = configs.get_rect(topleft=(736, 320))
+        middleScreen = screen.get_height()/2
+
+        exitGameRect = exitGame.get_rect(topleft=(736, middleScreen-74*2))
+        restartRect = restart.get_rect(topleft=(736, middleScreen-74))
+        configsRect = configs.get_rect(topleft=(736, middleScreen))
 
         def blitOptions():
+            middleScreen = rects.middleScreen
+
             screen.blit(rects.exitGame, rects.exitGameRect)
             screen.blit(rects.restart, rects.restartRect)
             screen.blit(rects.configs, rects.configsRect)
-            screen.blit(TxtMoedaBig.render(str(int(moreConfigs.coins)), True, "orange"), (620, 285))
+            screen.blit(TxtMoedaBig.render(str(int(moreConfigs.coins)), True, "orange"), (620, middleScreen-40))
 
+            # blit ranking
             for c in range(3):
                 usernameTxt = TxtRanking.render(moreConfigs.rankingPlayers[c][0], True, "black")
                 pointsTxt = TxtRanking.render(str(moreConfigs.rankingPlayers[c][1]) + " Pontos", True, "black")
                 
-                screen.blit(usernameTxt, (400, 460+(45*c)))
-                screen.blit(pointsTxt, (400+190, 460+(45*c)))
+                screen.blit(usernameTxt, (400, middleScreen+middleScreen/3+15+(45*c)))
+                screen.blit(pointsTxt, (400+190, middleScreen+middleScreen/3+15+(45*c)))
             
-
 
     TxtMoeda = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 30)
     TxtMoedaBig = pygame.font.Font(MAIN_DIR + '/fonts/Peace_Sans.otf', 40)
