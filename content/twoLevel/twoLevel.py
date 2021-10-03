@@ -22,6 +22,7 @@ def twoLevel(screen):
         actionClickPause = False
         isDead = 0
         winCount = 0
+        deadCount = 0 
 
     class Images:
         background = pygame.image.load(MAIN_DIR + "/images/levels/level02-background.png")
@@ -114,13 +115,13 @@ def twoLevel(screen):
         allHolders = [
             {"start": 708-32, "end": 980, "down": 498, "up": 440, "floor": 444-97},
             {"start": 2441-32, "end": 2712, "down": 505, "up": 447, "floor": 447-97},
-            {"start": 3855-32, "end": 4126, "down": 501, "up": 442, "floor": 439-97},
-            {"start": 4215-32, "end": 4485, "down": 338, "up": 280, "floor": 281-97},
-            {"start": 4555-32, "end": 4727, "down": 432, "up": 374, "floor": 373-97},
-            {"start": 5150-32, "end": 5421, "down": 493, "up": 436, "floor": 433-97},
-            {"start": 7238-32, "end": 7509, "down": 483, "up": 424, "floor": 421-97},
-            {"start": 7575-32, "end": 7846, "down": 341, "up": 283, "floor": 282-97},
-            {"start": 8500-32, "end": 8771, "down": 443, "up": 385, "floor": 383-97},
+            {"start": 3855-32, "end": 4126, "down": 501, "up": 442, "floor": 442-97},
+            {"start": 4215-32, "end": 4485, "down": 338, "up": 280, "floor": 280-97},
+            {"start": 4555-32, "end": 4727, "down": 432, "up": 374, "floor": 374-97},
+            {"start": 5150-32, "end": 5421, "down": 493, "up": 436, "floor": 436-97},
+            {"start": 7238-32, "end": 7509, "down": 483, "up": 424, "floor": 424-97},
+            {"start": 7575-32, "end": 7846, "down": 341, "up": 283, "floor": 283-97},
+            {"start": 8500-32, "end": 8771, "down": 443, "up": 385, "floor": 385-97},
         ]
 
         allBoxes = [
@@ -174,6 +175,17 @@ def twoLevel(screen):
             {"X": 5200, "Y": 435-39},
             {"X": 5270, "Y": 435-39},
             {"X": 5340, "Y": 435-39},
+
+            {"X": 7630, "Y": 248-39},
+            {"X": 7700, "Y": 248-39},
+            {"X": 7770, "Y": 248-39},
+
+            {"X": 8990, "Y": 542-39},
+            {"X": 9368, "Y": 542-39},
+            {"X": 9722, "Y": 542-39},
+            {"X": 9444, "Y": 610-39},
+            {"X": 9608, "Y": 610-39},
+
         ]
 
         monstersPositions = [
@@ -189,6 +201,9 @@ def twoLevel(screen):
             {"start": 4180, "end": 4780, "floor": 270-50, "type": 5},
             {"start": 5549, "end": 6824, "floor": 571-50, "type": 5},
             {"start": 6825, "end": 8104-123, "floor": 625-150, "type": 6},
+            {"start": 9042, "end": 9352, "floor": 630-52, "type": 7},
+            {"start": 9416, "end": 9708, "floor": 630-50, "type": 8},
+            {"start": 9434, "end": 0, "floor": 630-140, "type": 2},
         ]
 
     def ObstaclesCollision():
@@ -259,14 +274,14 @@ def twoLevel(screen):
             if Moviments.playerX < 570:
                 Moviments.playerX += 6
             else:
-                Moviments.backgroundX -= 10
+                Moviments.backgroundX -= 6
                 Moviments.isMoving = Moviments.Side
 
         elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 540:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
                 Moviments.playerX -= 6
             elif Moviments.backgroundX != 0:
-                Moviments.backgroundX += 10
+                Moviments.backgroundX += 6
                 Moviments.isMoving = Moviments.Side
 
     def move():
@@ -286,6 +301,8 @@ def twoLevel(screen):
         if pygame.key.get_pressed()[pygame.K_UP]:
             if "fall" != Moviments.Type != "jump":
                 Moviments.Type = "jump"
+                pygame.mixer.music.load(MAIN_DIR + '/sons/jump.wav')
+                pygame.mixer.music.play()
 
         if pygame.key.get_pressed()[pygame.K_DOWN]:
             if Moviments.Type == "jump":
@@ -294,6 +311,8 @@ def twoLevel(screen):
     def updatePoints():
         print("Atualizou")
         # ------- Inserir novos pontos na para o usuario --------
+        pygame.mixer.music.load(MAIN_DIR + '/sons/round_end.wav')
+        pygame.mixer.music.play()
 
         Afile = open(MAIN_DIR + "/localStorage.json")
         Ajson = json.load(Afile)
@@ -380,9 +399,15 @@ def twoLevel(screen):
             pygame.mixer.music.play()
 
         # Game Over
-        # if len(monsterCollision) > 0 and configDead.isGameOver == False:
-        #     configDead.pause.gameOver = True
-        #     configDead.isPaused = True
+        if len(monsterCollision) > 0 and configDead.isGameOver == False:
+            configDead.pause.gameOver = True
+            configDead.isPaused = True
+            configDead.deadCount = 1 if configDead.deadCount == 0 else 2
+        
+        if configDead.deadCount == 1:
+            pygame.mixer.music.load(MAIN_DIR + '/sons/death.wav')
+            pygame.mixer.music.play()
+            configDead.deadCount = 2
 
         configDead.pause.drawPause(coinsAmount)
 

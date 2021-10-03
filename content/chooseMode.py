@@ -12,6 +12,7 @@ from root import MAIN_DIR
 
 def chooseMode(screen):
 
+
     class GameOptions:
         def __init__(self):
             self.images = []

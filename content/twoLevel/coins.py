@@ -24,10 +24,10 @@ class Coins(pygame.sprite.Sprite):
     
     def update(self, isMoving):
         if isMoving == "right":
-            self.coinX -= 10
+            self.coinX -= 6
 
         elif isMoving == "left":
-            self.coinX += 10
+            self.coinX += 6
         
         if self.coinY == self.Y:
             animationCoin.position = "Top"

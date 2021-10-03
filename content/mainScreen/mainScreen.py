@@ -10,6 +10,7 @@ from ..chooseMode import chooseMode
 clock = pygame.time.Clock()
 
 def mainScreen(screen):
+
     clock.tick(60)
     class IsAuthenticated:
         def verify():
@@ -68,7 +69,6 @@ def mainScreen(screen):
 
 
     while True:
-
         BlitAll()
         nextScreen = False
         
@@ -115,7 +115,6 @@ def mainScreen(screen):
 
 
         if nextScreen == True:
-            print("Saindo da tela")
             break
 
 
