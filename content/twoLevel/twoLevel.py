@@ -115,8 +115,8 @@ def twoLevel(screen):
             {"start": 708-32, "end": 980, "down": 498, "up": 440, "floor": 444-97},
             {"start": 2441-32, "end": 2712, "down": 505, "up": 447, "floor": 447-97},
             {"start": 3855-32, "end": 4126, "down": 501, "up": 442, "floor": 439-97},
-            {"start": 4456-32, "end": 4729, "down": 432, "up": 374, "floor": 373-97},
-            {"start": 4215-32, "end": 4455, "down": 338, "up": 280, "floor": 281-97},
+            {"start": 4215-32, "end": 4485, "down": 338, "up": 280, "floor": 281-97},
+            {"start": 4555-32, "end": 4727, "down": 432, "up": 374, "floor": 373-97},
             {"start": 5150-32, "end": 5421, "down": 493, "up": 436, "floor": 433-97},
             {"start": 7238-32, "end": 7509, "down": 483, "up": 424, "floor": 421-97},
             {"start": 7575-32, "end": 7846, "down": 341, "up": 283, "floor": 282-97},
@@ -130,11 +130,11 @@ def twoLevel(screen):
             {"start": 1898, "end": 2008, "up": 522, "floor": 522-95},
             {"start": 1937, "end": 2007, "up": 469, "floor": 469-95},
 
-            {"start": 8103, "end": 8159, "up": 562, "floor": 562-95},
-            {"start": 8159, "end": 8269, "up": 521, "floor": 562-95},
-            {"start": 8200, "end": 8269, "up": 468, "floor": 468-95},
+            {"start": 8104, "end": 8160, "up": 562, "floor": 562-95},
+            {"start": 8160, "end": 8269, "up": 521, "floor": 521-95},
+            {"start": 8200, "end": 8268, "up": 468, "floor": 468-95},
 
-            {"start": 8978, "end": 9041, "up": 557, "floor": 557-95},
+            {"start": 8978, "end": 9041, "up": 556, "floor": 556-95},
 
             {"start": 9353, "end": 9416, "up": 557, "floor": 557-95},
 
@@ -148,6 +148,32 @@ def twoLevel(screen):
 
             {"X": 2525, "Y": 612-39},
             {"X": 2595, "Y": 612-39},
+
+            {"X": 1801, "Y": 630-39},
+            {"X": 1855, "Y": 560-39},
+            {"X": 1898, "Y": 522-39},
+            {"X": 1965, "Y": 469-39},
+
+            {"X": 2480, "Y": 435-39},
+            {"X": 2550, "Y": 435-39},
+            {"X": 2620, "Y": 435-39},
+
+            {"X": 3030, "Y": 650-40-39},
+            {"X": 3070, "Y": 650-40*2-39},
+            {"X": 3110, "Y": 650-40*3-39},
+            {"X": 3150, "Y": 650-40*4-39},
+            {"X": 3200, "Y": 650-40*4-39},
+            {"X": 3240, "Y": 650-40*3-39},
+            {"X": 3280, "Y": 650-40*2-39},
+            {"X": 3320, "Y": 650-40*1-39},
+            
+            {"X": 3900, "Y": 438-39},
+            {"X": 3970, "Y": 438-39},
+            {"X": 4040, "Y": 438-39},
+
+            {"X": 5200, "Y": 435-39},
+            {"X": 5270, "Y": 435-39},
+            {"X": 5340, "Y": 435-39},
         ]
 
         monstersPositions = [
@@ -157,6 +183,12 @@ def twoLevel(screen):
             {"start": 2338, "end": 0, "floor": 630-140, "type": 3},
             {"start": 2195, "end": 3060, "floor": 400-50, "type": 5},
             {"start": 3684-72, "end": 4235-72, "floor": 632-120, "type": 4},
+            {"start": 3840, "end": 4130, "floor": 420-57, "type": 1},
+            {"start": 4476, "end": 5353-105, "floor": 628-105, "type": 0},
+            {"start": 4850, "end": 0, "floor": 630-140, "type": 3},
+            {"start": 4180, "end": 4780, "floor": 270-50, "type": 5},
+            {"start": 5549, "end": 6824, "floor": 571-50, "type": 5},
+            {"start": 6825, "end": 8104-123, "floor": 625-150, "type": 6},
         ]
 
     def ObstaclesCollision():
@@ -227,14 +259,14 @@ def twoLevel(screen):
             if Moviments.playerX < 570:
                 Moviments.playerX += 6
             else:
-                Moviments.backgroundX -= 6
+                Moviments.backgroundX -= 10
                 Moviments.isMoving = Moviments.Side
 
         elif Moviments.Type != "stopped" and Moviments.Side == "left" and Moviments.diagonally == True and Moviments.playerY <= 540:
             if Moviments.backgroundX == 0 and Moviments.playerX > 0:
                 Moviments.playerX -= 6
             elif Moviments.backgroundX != 0:
-                Moviments.backgroundX += 6
+                Moviments.backgroundX += 10
                 Moviments.isMoving = Moviments.Side
 
     def move():
@@ -260,6 +292,7 @@ def twoLevel(screen):
                 Moviments.Type = "fall"
 
     def updatePoints():
+        print("Atualizou")
         # ------- Inserir novos pontos na para o usuario --------
 
         Afile = open(MAIN_DIR + "/localStorage.json")
@@ -347,9 +380,9 @@ def twoLevel(screen):
             pygame.mixer.music.play()
 
         # Game Over
-        if len(monsterCollision) > 0 and configDead.isGameOver == False:
-            configDead.pause.gameOver = True
-            configDead.isPaused = True
+        # if len(monsterCollision) > 0 and configDead.isGameOver == False:
+        #     configDead.pause.gameOver = True
+        #     configDead.isPaused = True
 
         configDead.pause.drawPause(coinsAmount)
 

@@ -7,6 +7,7 @@ birdMonster = pygame.image.load(MAIN_DIR + "/images/monsters/bird-monster.png")
 birdMonster2 = pygame.image.load(MAIN_DIR + "/images/monsters/bird-monster2.png")
 plansMonster = pygame.image.load(MAIN_DIR + "/images/monsters/plantMonster.png")
 cactusMonster = pygame.image.load(MAIN_DIR + "/images/monsters/cactusMonster.png")
+nightMonster = pygame.image.load(MAIN_DIR + "/images/monsters/nightMonster.png")
 
 
 class animationMonster:
@@ -55,6 +56,14 @@ class Monster(pygame.sprite.Sprite):
             self.isMove = True
             self.AnimationDelay = 0.2
             self.velocity = 4
+        elif Type == 6:
+            altura = 189
+            x = 194
+            self.time = 18
+            self.imageType = nightMonster
+            self.isMove = True
+            self.AnimationDelay = 0.4
+            self.velocity = 4
 
         if Type == 3:
             self.imageType = cactusMonster
@@ -83,9 +92,9 @@ class Monster(pygame.sprite.Sprite):
 
         # Movimentos do player
         if isMoving == "right":
-            self.monsterStart -= 6
+            self.monsterStart -= 10
         elif isMoving == "left":
-            self.monsterStart += 6
+            self.monsterStart += 10
             
         # Movimentos automatico do monstro
         if self.isMove == True:
