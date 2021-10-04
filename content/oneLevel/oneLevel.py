@@ -171,12 +171,12 @@ def oneLevel(screen):
 
             # Colisão com a frente da caixa
             if X > box["start"] and X < box["end"]-160 and Y -99 < 552 and Y > box["up"]:
-                Moviments.backgroundX = (box["start"] *-1) 
+                Moviments.backgroundX = (box["start"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
             if X < box["end"] and X > box["start"]+160 and Y -99 < 552 and Y > box["up"]:
-                Moviments.backgroundX = (box["end"] *-1)
+                Moviments.backgroundX = (box["end"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
     def moviments():
@@ -352,7 +352,7 @@ def oneLevel(screen):
             coinsAmount += 1
             
             pygame.mixer.music.load(MAIN_DIR + '/sons/coin.wav')
-            pygame.mixer.music.play()
+            pygame.mixer.music.play()        
         # Game Over
         if len(monsterCollision) > 0 and configDead.isGameOver == False:
             configDead.pause.gameOver = True
