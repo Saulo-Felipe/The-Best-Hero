@@ -12,8 +12,6 @@ from .trophy import Trophy
 from pygame.locals import *
 
 
-
-
 def oneLevel(screen):
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
@@ -123,10 +121,9 @@ def oneLevel(screen):
 
         allBoxes = [
             {"start": 3062, "end": 3240, "up": 546, "floor": 456},
-            {"start": 6296, "end": 6475, "up": 542, "floor": 452},
+            {"start": 6296, "end": 6454, "up": 542, "floor": 452},
             {"start": 8854, "end": 9011, "up": 545, "floor": 455},
         ]
-
 
     def collision():
         floor = (Moviments.backgroundX - 570)*(-1)
@@ -159,8 +156,8 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
         for box in Obstacles.allBoxes:
-            # Subir na caixa
             
+            # Subir na caixa
             if Y < box["up"] and box["start"] < X < box["end"] and Moviments.Type == "fall":
                 Moviments.floor = box["floor"]
 
@@ -170,12 +167,12 @@ def oneLevel(screen):
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X > box["start"] and X < box["end"]-160 and Y -99 < 552 and Y > box["up"]:
+            if X > box["start"] and X < box["end"]-125 and Y -99 < 552 and Y > box["up"]:
                 Moviments.backgroundX = (box["start"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
             # Colisão com a traseira da caixa
-            if X < box["end"] and X > box["start"]+160 and Y -99 < 552 and Y > box["up"]:
+            if X < box["end"] and X > box["start"]+125 and Y -99 < 552 and Y > box["up"]:
                 Moviments.backgroundX = (box["end"] *-1) + 555 + 52
                 Moviments.isMoving = False
 
@@ -306,7 +303,6 @@ def oneLevel(screen):
         allSpritesGroup.add(monster)
         monsterGroup.add(monster)
 
-
     coinsAmount = 0
     txtCoins = pygame.font.Font(MAIN_DIR + "/fonts/Peace_Sans.otf", 30)
 
@@ -327,7 +323,7 @@ def oneLevel(screen):
         clock.tick(60)
 
         for event in pygame.event.get():
-            if event == QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 exit()
 
@@ -352,7 +348,8 @@ def oneLevel(screen):
             coinsAmount += 1
             
             pygame.mixer.music.load(MAIN_DIR + '/sons/coin.wav')
-            pygame.mixer.music.play()        
+            pygame.mixer.music.play()
+
         # Game Over
         if len(monsterCollision) > 0 and configDead.isGameOver == False:
             configDead.pause.gameOver = True
@@ -389,7 +386,6 @@ def oneLevel(screen):
 
                 configDead.winCount = 1
 
-
             if configDead.actionClickPause == "backToGame":
                 configDead.pause.Pause = False
                 configDead.isPaused = False
@@ -398,8 +394,5 @@ def oneLevel(screen):
                 oneLevel(screen)
             elif configDead.actionClickPause == "leaveGame":
                 return chooseMode.chooseMode(screen)
-            
-
-
 
         pygame.display.flip()

@@ -99,7 +99,7 @@ def twoLevel(screen):
             else:
                 self.image = self.spriteFrames[0] if Moviments.Side == "right" else pygame.transform.flip(self.spriteFrames[0], True, False)
 
-    class Obstacles():
+    class Obstacles(): #Posições
         allHoles = [
             {"start": 1135, "end": 1328},
             {"start": 2007, "end": 2188},
@@ -206,7 +206,7 @@ def twoLevel(screen):
             {"start": 9434, "end": 0, "floor": 630-140, "type": 2},
         ]
 
-    def ObstaclesCollision():
+    def ObstaclesCollision(): # Loops
         floor = (Moviments.backgroundX - 600)*(-1)
         Y = Moviments.playerY
         X = (Moviments.backgroundX * -1) + 540 + 52
@@ -236,7 +236,7 @@ def twoLevel(screen):
                 Moviments.Type = "fall"
 
         for box in Obstacles.allBoxes:
-            boxWidth = box["end"] - box["start"]
+            boxWidth = box["end"] - box["start"] - 10
 
             # Subir na caixa
             if Y < box["up"] and (X+20 > box["start"] and X-20 < box["end"]) and Moviments.Type == "fall":
@@ -248,7 +248,7 @@ def twoLevel(screen):
                 Moviments.Type = "fall"
 
             # Colisão com a frente da caixa
-            if X+20 >= box["start"] and X < box["end"]-boxWidth and Y+player.image.get_height()-10 > box["up"]:
+            if X+16.5 >= box["start"] and X < box["end"]-boxWidth and Y+player.image.get_height()-10 > box["up"]:
                 Moviments.backgroundX = box["start"]*-1 +610
                 Moviments.isMoving = False
 
@@ -309,7 +309,6 @@ def twoLevel(screen):
                 Moviments.Type = "fall"
 
     def updatePoints():
-        print("Atualizou")
         # ------- Inserir novos pontos na para o usuario --------
         pygame.mixer.music.load(MAIN_DIR + '/sons/round_end.wav')
         pygame.mixer.music.play()
@@ -341,6 +340,7 @@ def twoLevel(screen):
     allSpritesGroup.add(trophy)
     trophyGroup.add(trophy)
 
+    # adiciona as moedas e os monstros apartir das posições da lista 
     for c in Obstacles.coinsPositions:
         coin = Coins(c["X"], c["Y"])
 
@@ -365,18 +365,16 @@ def twoLevel(screen):
         coinsTxtRender = txtCoins.render(str(coinsAmount), True, "black")
         screen.blit(coinsTxtRender, (Images.coin.get_width()+40, 20))
 
-
     clock = pygame.time.Clock()
     while True:
         clock.tick(60)
 
         for event in pygame.event.get():
-            if event == QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 exit()
 
             if event.type == pygame.MOUSEBUTTONUP:
-                print("Player Y: ", Moviments.playerY)
                 if Images.pause.collidepoint(event.pos):
                     configDead.pause.Pause = True
                     configDead.isPaused = True

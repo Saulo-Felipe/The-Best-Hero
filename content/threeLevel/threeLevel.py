@@ -8,7 +8,9 @@ import json
 
 def threeLevel(screen):
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
+    pygame.mixer.music.load(MAIN_DIR + '/sons/init_bird.wav')
+    pygame.mixer.music.play()
+    
     LARGURA_TELA = 1140
     ALTURA_TELA = 724
     VELOCIDADE = 17
@@ -144,7 +146,7 @@ def threeLevel(screen):
 
         def voar(self):
             self.velocidade = -VELOCIDADE
-            pygame.mixer.music.load(MAIN_DIR + '/sons/jump.wav')
+            pygame.mixer.music.load(MAIN_DIR + '/sons/jump_bird.wav')
             pygame.mixer.music.play()
 
     def fora_da_tela(sprite):
@@ -160,6 +162,9 @@ def threeLevel(screen):
         moreConfigs.gameOver = True
 
         if moreConfigs.count == 0:
+            pygame.mixer.music.load(MAIN_DIR + '/sons/dead_bird.wav')
+            pygame.mixer.music.play()
+
             # ------- Inserir novos pontos na para o usuario --------
             Afile = open(MAIN_DIR + "/localStorage.json")
             Ajson = json.load(Afile)
@@ -180,7 +185,6 @@ def threeLevel(screen):
             result = connection.fetchall()
 
             moreConfigs.rankingPlayers = result
-            print("Atualizou")
             
 
 
@@ -202,11 +206,11 @@ def threeLevel(screen):
     while True:
         fps.tick(55)
         tela.blit(IMAGEM_FUNDO,(0,0))
-        tela.blit(IMAGEM_MOEDA, (20, 20))
         renderMoeda = TxtMoeda.render(str(int(moreConfigs.coins)), True, "black")
         grupo_heroi.draw(tela)
         grupo_cano.draw(tela)
         grupo_chao.draw(tela)
+        tela.blit(IMAGEM_MOEDA, (20, 20))
 
         for event in pygame.event.get():    
             if event.type == QUIT:
@@ -232,7 +236,6 @@ def threeLevel(screen):
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
 
-
         if fora_da_tela(grupo_chao.sprites()[0]):
             grupo_chao.remove(grupo_chao.sprites()[0])
             novo_chao = Chao(LARGURA_CHAO - 20)
@@ -248,6 +251,7 @@ def threeLevel(screen):
             
         if pygame.sprite.groupcollide(grupo_heroi, grupo_chao, False, False, pygame.sprite.collide_mask):
             game_over()
+            
         if pygame.sprite.groupcollide(grupo_heroi, grupo_cano, False, False, pygame.sprite.collide_mask):
             game_over()
 
