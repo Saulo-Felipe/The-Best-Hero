@@ -1,9 +1,11 @@
 <p align="center">
     <img src="./readme-images/logo.png">
 </p>
-<img src="https://img.shields.io/badge/Language-python-blue"/>
-<img src="https://img.shields.io/badge/©-Copyright-red"/>
-<img src="https://img.shields.io/badge/version-alfa-green"/>
+
+
+<img src="https://img.shields.io/badge/Language-python-blue"/><img src="https://img.shields.io/badge/©-Copyright-red"/><img src="https://img.shields.io/badge/version-alfa-green"/>
+
+
 
 
 ------------------------------------
