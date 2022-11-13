@@ -114,7 +114,7 @@ Para o desenvolvimento desse jogo, foram utilizadas as seguintes tecnologias:
 
 ## 👨 Autores <a id="autor"></a>
 
-<p align="center">➡️ Criado e desenvolvido por <strong>4 (incluindo eu) Integrantes </strong> do meu grupo de estudantes de Ciência da Computação 🧑‍💻.</p>
+<p align="center">➡️ Desenvolvido por <strong>4 (incluindo eu) Integrantes </strong> do meu grupo de estudantes de Ciência da Computação 🧑‍💻.</p>
 
 ------------------------------------
 
