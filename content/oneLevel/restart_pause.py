@@ -33,7 +33,7 @@ def configGame(screen):
         gameOverCount = 0
 
         def drawPause(coins):
-            if pause.Pause == True:
+            if pause.Pause:
                 if pause.pauseCount == 0:
                     screen.blit(backgroundBlack, (0, 0))
                     pause.pauseCount = 1
@@ -43,7 +43,7 @@ def configGame(screen):
                 screen.blit(TxtPaused, ((screen.get_width()-TxtPaused.get_width())/2, (screen.get_height()-400)/2+20))
                 screen.blit(configsImages.backToGame, rects.backToGameRect)
 
-            elif pause.gameOver == True:
+            elif pause.gameOver:
                 if pause.gameOverCount == 0:
                     screen.blit(backgroundBlack, (0, 0))
                     pause.gameOverCount = 1
@@ -52,7 +52,7 @@ def configGame(screen):
                 pygame.draw.rect(screen, "white", ((screen.get_width()-400)/2, (screen.get_height()-400)/2, 400, 300))
                 screen.blit(TxtPaused, ((screen.get_width()-TxtPaused.get_width())/2, (screen.get_height()-400)/2+20))
             
-            elif pause.win == True:
+            elif pause.win:
                 if pause.winCount == 0:
                     screen.blit(backgroundBlack, (0, 0))
                     pause.winCount = 1
@@ -64,12 +64,12 @@ def configGame(screen):
                 screen.blit(coinRender, (screen.get_width()/2-20, 250))
                 
 
-            if pause.gameOver == True or pause.Pause == True:
+            if pause.gameOver or pause.Pause:
                 screen.blit(configsImages.listBtn, rects.listGameRect)
                 screen.blit(configsImages.restartBtn, rects.restartGameRect)
                 screen.blit(configsImages.configBtn, rects.configGameRect)
             
-            if pause.win == True:
+            if pause.win:
                 screen.blit(configsImages.listBtn, (screen.get_width()/2-130, screen.get_height()/2+220))
                 screen.blit(configsImages.restartBtn, ((screen.get_width()-configsImages.restartBtn.get_width())/2, screen.get_height()/2+220))
                 screen.blit(configsImages.configBtn, (screen.get_width()/2+65, screen.get_height()/2+220))
@@ -79,16 +79,15 @@ def configGame(screen):
                 rects.configGameRect.topleft = (screen.get_width()/2+65, screen.get_height()/2+220)
             
 
-        def verifyScreen(event):
-            if event.type == pygame.MOUSEBUTTONUP:
-                if rects.backToGameRect.collidepoint(event.pos):
-                    return "backToGame"
-                
-                if rects.restartGameRect.collidepoint(event.pos):
-                    return "restartGame"
+        def verifyScreen(pos):
+            if rects.backToGameRect.collidepoint(pos):
+                return "backToGame"
+            
+            if rects.restartGameRect.collidepoint(pos):
+                return "restartGame"
 
-                if rects.listGameRect.collidepoint(event.pos):
-                    return "leaveGame"
+            if rects.listGameRect.collidepoint(pos):
+                return "leaveGame"
 
 
 

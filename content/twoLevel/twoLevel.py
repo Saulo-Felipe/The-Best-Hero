@@ -378,8 +378,9 @@ def twoLevel(screen):
                 if Images.pause.collidepoint(event.pos):
                     configDead.pause.Pause = True
                     configDead.isPaused = True
-    
-            configDead.actionClickPause = configDead.pause.verifyScreen(event)
+
+                if configDead.isPaused:
+                    configDead.actionClickPause = configDead.pause.verifyScreen(event.pos)
 
         move()
 

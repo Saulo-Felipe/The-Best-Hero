@@ -11,7 +11,7 @@ clock = pygame.time.Clock()
 
 def mainScreen(screen):
 
-    clock.tick(60)
+    clock.tick(100)
     class IsAuthenticated:
         def verify():
             Afile = open(MAIN_DIR + "/localStorage.json", "r")
@@ -84,7 +84,7 @@ def mainScreen(screen):
                         if event.unicode == aceptedLetters[letter]:
                             inputValues.state = aceptedLetters[letter]
             
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
                 userStatus = IsAuthenticated.verify()["isAuthenticated"]
 
                 if userStatus == False and Rects.enter.collidepoint(event.pos):
@@ -104,14 +104,13 @@ def mainScreen(screen):
                         nextScreen = False
             
 
-
         if inputValues.selectedSubScreen == "login":
-            inputValues.selectedSubScreen = loginScreen.drawLogin(screen, event, inputValues.state)
+            inputValues.selectedSubScreen = loginScreen.drawLogin(screen, inputValues.state)
         elif inputValues.selectedSubScreen == "register":
-            inputValues.selectedSubScreen = registerScreen.drawRegister(screen, event, inputValues.state)
+            inputValues.selectedSubScreen = registerScreen.drawRegister(screen, inputValues.state)
         
         
-        inputValues.state = False
+        inputValues.state = ""
 
 
         if nextScreen == True:

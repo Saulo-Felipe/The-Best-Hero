@@ -27,12 +27,13 @@ class configTxt:
     emailContent = ""
     passwordContent = ""
 
-    inputFocus = False
+    inputFocus = ""
 
 
 class Colors:
     email = "gray"
     password = "gray"
+
     def reset():
         Colors.email = "gray"
         Colors.password = "gray"
@@ -44,7 +45,7 @@ class Images:
     closeLogin = closeImg.get_rect(topleft=( (1140-350)/2+ 330, (724-400)/2 - 25))
 
 
-def drawLogin(screen, event, state):
+def drawLogin(screen, state):
 
     screenWidth = screen.get_width()
     screenHeight = screen.get_height()
@@ -114,38 +115,41 @@ def drawLogin(screen, event, state):
                 configTxt.errorMsg = "Esse usuário não existe"
 
 
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
 
-    if event.type == pygame.MOUSEBUTTONUP:
+            #focus input
+            if Inputs.email.collidepoint(event.pos):
+                Colors.reset()
+                Colors.email = "skyblue"
+                configTxt.inputFocus = "email"
 
-        #focus input
-        if Inputs.email.collidepoint(event.pos):
-            Colors.reset()
-            Colors.email = "skyblue"
-            configTxt.inputFocus = "email"
-        elif Inputs.password.collidepoint(event.pos):
-            Colors.reset()
-            Colors.password = "skyblue"
-            configTxt.inputFocus = "password"
-        elif Inputs.submit.collidepoint(event.pos):
-            isSuccess = Login()
+            elif Inputs.password.collidepoint(event.pos):
+                Colors.reset()
+                Colors.password = "skyblue"
+                configTxt.inputFocus = "password"
 
-            if isSuccess == False:
+            elif Inputs.submit.collidepoint(event.pos):
+                print("Submit")
+                isSuccess = Login()
+
+                if isSuccess == False:
+                    configTxt.errorMsg = ""
+                    configTxt.successMsg = ""
+                    return False
+            else:
+                configTxt.inputFocus = ""
+                Colors.reset()
+
+            # Close Login
+            if Images.closeLogin.collidepoint(event.pos):
                 configTxt.errorMsg = ""
                 configTxt.successMsg = ""
                 return False
-        else:
-            configTxt.inputFocus = False
-            Colors.reset()
 
-        # Close Login
-        if Images.closeLogin.collidepoint(event.pos):
-            configTxt.errorMsg = ""
-            configTxt.successMsg = ""
-            return False
-
-        # Go to register
-        if configTxt.goToRegister.collidepoint(event.pos):
-            return "register"
+            # Go to register
+            if configTxt.goToRegister.collidepoint(event.pos):
+                return "register"
 
     # Typing...
     if state != False:

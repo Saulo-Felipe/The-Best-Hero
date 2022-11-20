@@ -79,16 +79,15 @@ def configGame(screen):
                 rects.configGameRect.topleft = (screen.get_width()/2+65, screen.get_height()/2+220)
             
 
-        def verifyScreen(event):
-            if event.type == pygame.MOUSEBUTTONUP:
-                if rects.backToGameRect.collidepoint(event.pos):
-                    return "backToGame"
-                
-                if rects.restartGameRect.collidepoint(event.pos):
-                    return "restartGame"
+        def verifyScreen(pos):
+            if rects.backToGameRect.collidepoint(pos):
+                return "backToGame"
+            
+            if rects.restartGameRect.collidepoint(pos):
+                return "restartGame"
 
-                if rects.listGameRect.collidepoint(event.pos):
-                    return "leaveGame"
+            if rects.listGameRect.collidepoint(pos):
+                return "leaveGame"
 
 
 

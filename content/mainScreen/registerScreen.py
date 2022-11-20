@@ -45,7 +45,7 @@ class Colors:
 
 
 
-def drawRegister(screen, event, state):
+def drawRegister(screen, state):
     screenWidth = screen.get_width()
     screenHeight = screen.get_height()
 
@@ -114,35 +114,36 @@ def drawRegister(screen, event, state):
                 configTxt.successMsg = ""
                 configTxt.errorMsg = "Esse email pertence a outra conta"
 
-    if event.type == pygame.MOUSEBUTTONUP:
-        #focus input
-        if Inputs.username.collidepoint(event.pos):
-            Colors.reset()
-            Colors.username = "skyblue"
-            configTxt.inputFocus = "username"        
-        elif Inputs.email.collidepoint(event.pos):
-            Colors.reset()
-            Colors.email = "skyblue"
-            configTxt.inputFocus = "email"
-        elif Inputs.password.collidepoint(event.pos):
-            Colors.reset()
-            Colors.password = "skyblue"
-            configTxt.inputFocus = "password"
-        else:
-            configTxt.inputFocus = False
-            Colors.reset()
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONUP:
+            #focus input
+            if Inputs.username.collidepoint(event.pos):
+                Colors.reset()
+                Colors.username = "skyblue"
+                configTxt.inputFocus = "username"        
+            elif Inputs.email.collidepoint(event.pos):
+                Colors.reset()
+                Colors.email = "skyblue"
+                configTxt.inputFocus = "email"
+            elif Inputs.password.collidepoint(event.pos):
+                Colors.reset()
+                Colors.password = "skyblue"
+                configTxt.inputFocus = "password"
+            else:
+                configTxt.inputFocus = False
+                Colors.reset()
 
-        # Close register
-        if Images.closeRegister.collidepoint(event.pos):
-            configTxt.usernameContent = ""
-            configTxt.emailContent = ""
-            configTxt.passwordContent = ""
+            # Close register
+            if Images.closeRegister.collidepoint(event.pos):
+                configTxt.usernameContent = ""
+                configTxt.emailContent = ""
+                configTxt.passwordContent = ""
 
-            return False
+                return False
 
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        if Inputs.submit.collidepoint(event.pos):
-            register()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if Inputs.submit.collidepoint(event.pos):
+                register()
 
     # Typing...
     if state != False:
