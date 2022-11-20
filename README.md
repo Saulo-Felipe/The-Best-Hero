@@ -18,7 +18,6 @@
 * [Tecnologias](#tecnologias)
 * [Autores](#autor)
 * [Licença](#licenca)
-* <a href="#" target="_blank">🎮 Jogo em python ---- Concluído ⌛ ----</a>
 
 
 ------------------------------------
