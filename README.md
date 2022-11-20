@@ -23,6 +23,10 @@
 
 ------------------------------------
 
+<p align="center">
+    <img src="https://img.shields.io/static/v1?label=&message=Este jogo não segue boas práticas de escrita de código&color=red" />
+</p>
+
 ## 💻 Sobre <a id="sobre"></a>
  
  🎮 Jogo relativamente simples desenvolvido em python usando a bibliotera <a href="https://www.pygame.org/news">Pygame</a>. Alguns cenários do <i>The best Hero</i> foi construído/desenvolvido baseando-se na jogabilidade e temática do  clássico <a href="https://pt.wikipedia.org/wiki/Super_Mario_World">super mario world</a>. O jogo não foi totalmente finalizado, estando em uma versão alfa e podendo apresentar bugs.
